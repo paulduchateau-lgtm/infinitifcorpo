@@ -57,12 +57,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    mix-blend-mode: difference;
     color: #fff;
     pointer-events: none;
   }
   .nav > * { pointer-events: auto; }
-  .nav .logo { width: 110px; }
+  .nav .logo { width: 110px; mix-blend-mode: difference; }
+  .nav .links { mix-blend-mode: difference; }
   .nav .logo img { width: 100%; filter: invert(1); }
   .nav .links {
     display: flex; gap: 28px;
@@ -93,7 +93,7 @@
     background: var(--inf-orange);
     color: #fff;
     transition: background 200ms var(--ease-out), transform 200ms var(--ease-out);
-    mix-blend-mode: normal;
+    isolation: isolate;
   }
   .nav .cta:hover { background: var(--inf-orange-deep); }
   @media (max-width: 860px) {
