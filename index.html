@@ -54,15 +54,16 @@
     top: 0; left: 0; right: 0;
     z-index: 50;
     padding: 22px var(--pad-x);
+    padding-right: calc(var(--pad-x) + 140px);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    mix-blend-mode: difference;
     color: #fff;
     pointer-events: none;
   }
   .nav > * { pointer-events: auto; }
-  .nav .logo { width: 110px; mix-blend-mode: difference; }
-  .nav .links { mix-blend-mode: difference; }
+  .nav .logo { width: 110px; }
   .nav .logo img { width: 100%; filter: invert(1); }
   .nav .links {
     display: flex; gap: 28px;
@@ -82,7 +83,11 @@
   }
   .nav .links a:hover::after { transform: scaleX(1); transform-origin: left; }
   .nav .links a.active::after { transform: scaleX(1); }
-  .nav .cta {
+  .nav-cta {
+    position: fixed;
+    top: 22px;
+    right: var(--pad-x);
+    z-index: 51;
     font-family: var(--font-accent);
     font-size: 12px;
     font-weight: 600;
@@ -93,9 +98,8 @@
     background: var(--inf-orange);
     color: #fff;
     transition: background 200ms var(--ease-out), transform 200ms var(--ease-out);
-    isolation: isolate;
   }
-  .nav .cta:hover { background: var(--inf-orange-deep); }
+  .nav-cta:hover { background: var(--inf-orange-deep); }
   @media (max-width: 860px) {
     .nav .links { display: none; }
   }
@@ -1663,8 +1667,8 @@
     <a href="#team" data-link="team">Équipe</a>
     <a href="#offices" data-link="offices">Bureaux</a>
   </div>
-  <a href="#contact" class="cta">Parlons-en</a>
 </nav>
+<a href="#contact" class="nav-cta">Parlons-en</a>
 
 <!-- ───────────────── Side rail ───────────────── -->
 <aside class="rail" id="rail" aria-hidden="true">
