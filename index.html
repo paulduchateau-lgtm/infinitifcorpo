@@ -1,0 +1,2912 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Infinitif — Cabinet de conseil en transformation</title>
+<link rel="stylesheet" href="assets/colors_and_type.css" />
+<style>
+  /* ─────────────────────────────────────────────────────────────────
+     Foundations
+     ───────────────────────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: auto; } /* lenis manages */
+  body {
+    font-family: var(--font-sans);
+    color: var(--fg-1);
+    background: var(--inf-white);
+    font-size: var(--fs-base);
+    line-height: var(--lh-relaxed);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--inf-orange); color: #fff; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  button { font: inherit; border: none; background: none; cursor: pointer; color: inherit; }
+
+  /* ─────────────────────────────────────────────────────────────────
+     Lenis smooth scroll housekeeping
+     ───────────────────────────────────────────────────────────────── */
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+  .lenis.lenis-stopped { overflow: hidden; }
+
+  /* ─────────────────────────────────────────────────────────────────
+     Layout chrome
+     ───────────────────────────────────────────────────────────────── */
+  :root {
+    --pad-x: clamp(24px, 5vw, 80px);
+    --col-gap: 24px;
+    --rail-w: 96px;
+  }
+  .container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 var(--pad-x);
+  }
+
+  /* Top nav — minimal, editorial */
+  .nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    padding: 22px var(--pad-x);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    mix-blend-mode: difference;
+    color: #fff;
+    pointer-events: none;
+  }
+  .nav > * { pointer-events: auto; }
+  .nav .logo { width: 110px; }
+  .nav .logo img { width: 100%; filter: invert(1); }
+  .nav .links {
+    display: flex; gap: 28px;
+    font-family: var(--font-accent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: var(--ls-widest);
+    text-transform: uppercase;
+  }
+  .nav .links a { position: relative; padding: 4px 0; }
+  .nav .links a::after {
+    content: '';
+    position: absolute; left: 0; right: 0; bottom: 0;
+    height: 1px; background: currentColor;
+    transform: scaleX(0); transform-origin: right;
+    transition: transform 400ms var(--ease-out);
+  }
+  .nav .links a:hover::after { transform: scaleX(1); transform-origin: left; }
+  .nav .links a.active::after { transform: scaleX(1); }
+  .nav .cta {
+    font-family: var(--font-accent);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: var(--ls-widest);
+    text-transform: uppercase;
+    padding: 12px 22px;
+    border-radius: var(--r-pill);
+    background: var(--inf-orange);
+    color: #fff;
+    transition: background 200ms var(--ease-out), transform 200ms var(--ease-out);
+    mix-blend-mode: normal;
+  }
+  .nav .cta:hover { background: var(--inf-orange-deep); }
+  @media (max-width: 860px) {
+    .nav .links { display: none; }
+  }
+
+  /* Side rail — section index, fixed left */
+  .rail {
+    position: fixed;
+    top: 50%;
+    left: 32px;
+    transform: translateY(-50%);
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    font-family: var(--font-accent);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: var(--ls-widest);
+    text-transform: uppercase;
+    color: var(--fg-3);
+    mix-blend-mode: difference;
+  }
+  .rail .item {
+    display: flex; align-items: center; gap: 12px;
+    color: rgba(255,255,255,0.55);
+    transition: color 300ms var(--ease-out);
+    cursor: pointer;
+  }
+  .rail .item .num { width: 22px; text-align: right; tabular-nums: true; font-variant-numeric: tabular-nums; }
+  .rail .item .bar {
+    width: 18px; height: 1px; background: currentColor;
+    transition: width 400ms var(--ease-out), background 300ms var(--ease-out);
+  }
+  .rail .item .label { opacity: 0; transform: translateX(-4px); transition: opacity 300ms var(--ease-out), transform 300ms var(--ease-out); }
+  .rail .item.active { color: var(--inf-orange); }
+  .rail .item.active .bar { width: 36px; }
+  .rail .item.active .label { opacity: 1; transform: translateX(0); }
+  .rail .item:hover .label { opacity: 1; transform: translateX(0); }
+  @media (max-width: 980px) { .rail { display: none; } }
+
+  /* ─────────────────────────────────────────────────────────────────
+     Section scaffolding
+     ───────────────────────────────────────────────────────────────── */
+  section {
+    position: relative;
+    padding: clamp(80px, 12vw, 160px) 0;
+  }
+  .section-head {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 48px;
+    align-items: baseline;
+    margin-bottom: 64px;
+  }
+  .section-head .index {
+    font-family: var(--font-accent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: var(--ls-widest);
+    color: var(--fg-3);
+    padding-top: 8px;
+  }
+  .section-head .index::before {
+    content: '';
+    display: block;
+    width: 32px; height: 2px;
+    background: var(--inf-orange);
+    margin-bottom: 12px;
+  }
+  .eyebrow-row {
+    display: flex; align-items: center; gap: 14px;
+    font-family: var(--font-accent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: var(--ls-widest);
+    text-transform: uppercase;
+    color: var(--inf-orange);
+    margin-bottom: 24px;
+  }
+  .eyebrow-row .dot { width: 6px; height: 6px; background: var(--inf-orange); border-radius: 50%; }
+
+  /* Big editorial title — used a lot */
+  .title-display {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+    font-size: clamp(44px, 7.5vw, 116px);
+    margin: 0;
+    color: var(--inf-black);
+    text-wrap: balance;
+    padding-bottom: 0.08em;
+  }
+  .title-section {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.06;
+    letter-spacing: -0.025em;
+    font-size: clamp(36px, 4.8vw, 72px);
+    margin: 0;
+    color: var(--inf-black);
+    text-wrap: balance;
+    padding-bottom: 0.06em;
+  }
+  .verb {
+    font-style: italic;
+    font-weight: 700;
+  }
+  .accent-orange { color: var(--inf-orange); }
+
+  /* Reveal animation primitive */
+  .reveal-mask {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+    padding-bottom: 0.12em;
+    margin-bottom: -0.12em;
+  }
+  .reveal-mask > span {
+    display: inline-block;
+    transform: translateY(110%);
+    transition: transform 800ms var(--ease-out);
+    will-change: transform;
+  }
+  .reveal-mask.in > span { transform: translateY(0); }
+  .reveal-mask.delay-1 > span { transition-delay: 80ms; }
+  .reveal-mask.delay-2 > span { transition-delay: 160ms; }
+  .reveal-mask.delay-3 > span { transition-delay: 240ms; }
+  .reveal-mask.delay-4 > span { transition-delay: 320ms; }
+  .reveal-mask.delay-5 > span { transition-delay: 400ms; }
+
+  .fade-up {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 800ms var(--ease-out), transform 800ms var(--ease-out);
+    will-change: transform, opacity;
+  }
+  .fade-up.in { opacity: 1; transform: translateY(0); }
+  .fade-up.d1 { transition-delay: 100ms; }
+  .fade-up.d2 { transition-delay: 200ms; }
+  .fade-up.d3 { transition-delay: 300ms; }
+  .fade-up.d4 { transition-delay: 400ms; }
+
+  /* The traveling orange bar — Decorative element shared across sections */
+  .orange-bar {
+    height: 3px; background: var(--inf-orange);
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform 1000ms var(--ease-out);
+  }
+  .orange-bar.in { transform: scaleX(1); }
+
+  /* ─────────────────────────────────────────────────────────────────
+     HERO
+     ───────────────────────────────────────────────────────────────── */
+  .hero {
+    min-height: 100vh;
+    padding-top: 140px;
+    padding-bottom: 80px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero .container {
+    position: relative;
+    z-index: 2;
+  }
+  .hero .top-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    font-family: var(--font-accent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: var(--ls-widest);
+    text-transform: uppercase;
+    color: var(--fg-2);
+  }
+  .hero .top-meta .left { display: flex; gap: 32px; align-items: center; }
+  .hero .top-meta .right { text-align: right; }
+  .hero .top-meta .live::before {
+    content: ''; display: inline-block; width: 6px; height: 6px;
+    background: var(--inf-orange); border-radius: 50%;
+    margin-right: 8px; vertical-align: middle;
+    animation: pulse 2s var(--ease-out) infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  /* Hero headline — visible by default; JS adds .ready to trigger reveal */
+  .hero-h1 .hero-line { display: inline-block; opacity: 1; transform: translateY(0); transition: opacity 700ms var(--ease-out), transform 700ms var(--ease-out); }
+  .hero-h1.armed .hero-line { opacity: 0; transform: translateY(18px); }
+  .hero-h1.armed.ready .hero-line { opacity: 1; transform: translateY(0); }
+  .hero-h1.armed.ready .hero-line.l1 { transition-delay: 120ms; }
+  .hero-h1.armed.ready .hero-line.l2 { transition-delay: 240ms; }
+  .hero-h1.armed.ready .hero-line.l3 { transition-delay: 360ms; }
+  @keyframes heroLine { to { opacity: 1; transform: translateY(0); } }
+
+  .hero-headline {
+    align-self: end;
+    margin-top: clamp(48px, 8vw, 96px);
+    max-width: min(900px, 62%);
+  }
+  @media (max-width: 1100px) { .hero-headline { max-width: 100%; } }
+  .hero-headline .verb-row {
+    display: block;
+  }
+  .hero-headline .title-display { display: block; }
+
+  .hero-foot {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 48px;
+    align-items: end;
+    margin-top: 64px;
+    padding-top: 32px;
+    border-top: 1px solid var(--inf-gray-200);
+  }
+  .hero-foot .lede {
+    max-width: 480px;
+    font-size: clamp(15px, 1.25vw, 18px);
+    line-height: 1.55;
+    color: var(--fg-1);
+  }
+  .hero-foot .lede strong { color: var(--inf-orange); font-weight: 600; }
+  .hero-foot .scroll-hint {
+    font-family: var(--font-accent);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: var(--ls-widest);
+    text-transform: uppercase;
+    color: var(--fg-3);
+    display: flex; flex-direction: column; align-items: flex-end; gap: 12px;
+  }
+  .hero-foot .scroll-hint .arrow {
+    width: 1px; height: 40px; background: var(--inf-orange);
+    animation: scroll-pulse 2.4s var(--ease-out) infinite;
+    transform-origin: top;
+  }
+  @keyframes scroll-pulse {
+    0% { transform: scaleY(0); }
+    50% { transform: scaleY(1); }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  /* Hero photo — single editorial portrait on the right */
+  .hero-mosaic {
+    position: absolute;
+    right: var(--pad-x);
+    top: 50%;
+    transform: translateY(-50%);
+    width: clamp(340px, 38vw, 600px);
+    height: clamp(440px, 52vw, 760px);
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    animation: hero-mosaic-in 1200ms var(--ease-out) 350ms forwards;
+  }
+  @keyframes hero-mosaic-in { to { opacity: 1; } }
+  .hero-mosaic .tile {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: var(--inf-gray-100);
+    box-shadow: 0 40px 100px -40px rgba(0,0,0,0.4), 0 12px 32px -12px rgba(0,0,0,0.2);
+  }
+  .hero-mosaic .tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: contrast(1.02) saturate(1.05);
+    transform: scale(1.04);
+    animation: hero-drift 22s ease-in-out infinite alternate;
+  }
+  @keyframes hero-drift { from { transform: scale(1.04) translate(0,0); } to { transform: scale(1.08) translate(-1%, -1.5%); } }
+  @media (max-width: 1100px) {
+    .hero-mosaic { opacity: 0.18; pointer-events: none; }
+  }
+  @media (max-width: 800px) {
+    .hero-mosaic { display: none; }
+  }
+
+  /* Hero signature shape — abstract orange bar composition (right side) */
+  .hero-shape {
+    position: absolute;
+    right: var(--pad-x);
+    top: 50%;
+    transform: translateY(-50%);
+    width: clamp(280px, 30vw, 460px);
+    height: clamp(280px, 30vw, 460px);
+    pointer-events: none;
+    opacity: 0;
+    animation: hero-shape-in 1400ms var(--ease-out) 600ms forwards;
+  }
+  @keyframes hero-shape-in {
+    to { opacity: 1; }
+  }
+  @media (max-width: 1100px) {
+    .hero-shape { opacity: 0.18; right: -20px; }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
+     SECTION 02 — CE QU'ON FAIT (3 mouvements)
+     ───────────────────────────────────────────────────────────────── */
+  .movements {
+    background: var(--inf-white);
+  }
+  .movement {
+    display: grid;
+    grid-template-columns: 120px 1fr 1fr;
+    gap: 48px;
+    padding: 80px 0;
+    border-top: 1px solid var(--inf-gray-200);
+    position: relative;
+    align-items: start;
+  }
+  .movement:last-child { border-bottom: 1px solid var(--inf-gray-200); }
+  .movement .num {
+    font-family: var(--font-accent);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: var(--ls-widest);
+    color: var(--fg-3);
+    padding-top: 12px;
+  }
+  .movement .verb-block h3 {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 5vw, 72px);
+    font-weight: 700;
+    line-height: 0.98;
+    letter-spacing: -0.025em;
+    margin: 0;
+  }
+  .movement .verb-block .sub {
+    font-family: var(--font-accent);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: var(--ls-widest);
+    text-transform: uppercase;
+    color: var(--inf-orange);
+    margin-bottom: 12px;
+  }
+  .movement .body {
+    padding-top: 8px;
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--fg-1);
+  }
+  .movement .body p { margin: 0 0 18px; }
+  .movement .body ul {
+    list-style: none; padding: 0; margin: 18px 0 0;
+    display: flex; flex-direction: column; gap: 8px;
+    font-family: var(--font-accent);
+    font-size: 13px;
+    letter-spacing: var(--ls-wide);
+    text-transform: uppercase;
+    color: var(--fg-2);
+  }
+  .movement .body li {
+    display: grid;
+    grid-template-columns: 14px 1fr;
+    gap: 10px;
+    align-items: start;
+  }
+  .movement .body li::before {
+    content: '';
+    display: block; width: 8px; height: 1px; background: var(--inf-orange);
+    margin-top: 9px;
+  }
+
+  @media (max-width: 980px) {
+    .movement { grid-template-columns: 1fr; gap: 24px; padding: 56px 0; }
+    .movement .num { padding-top: 0; }
+  }
+
+  /* 6-expertises grid */
+  .expertises {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--inf-gray-200);
+    border-left: 1px solid var(--inf-gray-200);
+  }
+  .expertise {
+    padding: 40px 32px 36px;
+    border-right: 1px solid var(--inf-gray-200);
+    border-bottom: 1px solid var(--inf-gray-200);
+    display: flex; flex-direction: column; gap: 14px;
+    background: var(--inf-white);
+    transition: background 300ms var(--ease-out);
+    position: relative;
+  }
+  .expertise:hover { background: var(--inf-gray-50); }
+  .expertise .head {
+    display: flex; align-items: baseline; gap: 14px;
+    font-family: var(--font-accent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: var(--ls-widest);
+    text-transform: uppercase;
+    color: var(--fg-3);
+  }
+  .expertise .head .n {
+    color: var(--inf-orange);
+    font-weight: 600;
+  }
+  .expertise h4 {
+    font-family: var(--font-display);
+    font-size: clamp(22px, 2vw, 28px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin: 0;
+    color: var(--inf-black);
+  }
+  .expertise p {
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--fg-2);
+    margin: 0;
+  }
+  .expertise .verbs {
+    margin-top: auto;
+    padding-top: 16px;
+    font-family: var(--font-accent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: var(--ls-wide);
+    color: var(--inf-black);
+    border-top: 1px dashed var(--inf-gray-300);
+  }
+  .expertise .verbs .v {
+    display: inline-block;
+    margin-right: 12px;
+    color: var(--inf-orange);
+    font-style: italic;
+    font-weight: 600;
+  }
+  @media (max-width: 980px) { .expertises { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .expertises { grid-template-columns: 1fr; } }
+
+  /* IA highlight block (7th, full-width, distinct) */
+  .ia-tease {
+    margin-top: 32px;
+    background: var(--inf-black);
+    color: var(--inf-white);
+    padding: 56px clamp(32px, 4vw, 56px);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .ia-tease::before {
+    content: '+';
+    position: absolute;
+    right: 24px;
+    top: 16px;
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 96px;
+    line-height: 1;
+    color: var(--inf-orange);
+    opacity: 0.4;
+  }
+  .ia-tease .label {
+    font-family: var(--font-accent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: var(--ls-widest);
+    text-transform: uppercase;
+    color: var(--inf-orange);
+    margin-bottom: 16px;
+  }
+  .ia-tease h3 {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3vw, 44px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin: 0 0 16px;
+  }
+  .ia-tease p {
+    font-size: 15.5px;
+    line-height: 1.55;
+    color: rgba(255,255,255,0.78);
+    margin: 0;
+    max-width: 480px;
+  }
+  .ia-tease .link {
+    margin-top: 24px;
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--font-accent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: var(--ls-widest);
+    text-transform: uppercase;
+    color: var(--inf-orange);
+  }
+  .ia-tease .link::after {
+    content: '↘';
+    transition: transform 300ms var(--ease-out);
+  }
+  .ia-tease .link:hover::after { transform: translate(4px, 4px); }
+  .ia-tease .stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .ia-tease .stats .s .big {
+    font-family: var(--font-display);
+    font-size: clamp(48px, 5vw, 72px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--inf-orange);
+  }
+  .ia-tease .stats .s .lbl {
+    font-family: var(--font-accent);
+    font-size: 12px;
+    letter-spacing: var(--ls-wide);
+    color: rgba(255,255,255,0.6);
+    margin-top: 6px;
+    text-transform: uppercase;
+  }
+  @media (max-width: 860px) {
+    .ia-tease { grid-template-columns: 1fr; padding: 40px 24px; }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
+     SECTION 03 — POUR QUI (sectors)
+     ───────────────────────────────────────────────────────────────── */
+  .sectors {
+    background: var(--inf-gray-50);
+  }
+  .sectors-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--inf-gray-200);
+  }
+  .sectors-grid.sectors-grid-6 {
+    grid-template-columns: repeat(3, 1fr);
+    border-left: 1px solid var(--inf-gray-200);
+  }
+  .sectors-grid.sectors-grid-6 .sector {
+    border-bottom: 1px solid var(--inf-gray-200);
+  }
+  .sector {
+    border-right: 1px solid var(--inf-gray-200);
+    padding: 56px 32px 80px;
+    position: relative;
+    background: transparent;
+    transition: background 400ms var(--ease-out);
+    cursor: default;
+  }
+  .sector:last-child { border-right: none; }
+  .sector:hover { background: var(--inf-white); }
+  .sector:hover .sector-name { color: var(--inf-orange); }
+  .sector .pct {
+    font-family: var(--font-accent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: var(--ls-widest);
+    text-transform: uppercase;
+    color: var(--fg-3);
+    margin-bottom: 32px;
+  }
+  .sector .sector-name {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin: 0 0 24px;
+    transition: color 300ms var(--ease-out);
+  }
+  .sector .desc {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--fg-2);
+    margin-bottom: 24px;
+  }
+  .sector .tags {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+  .sector .tags span {
+    padding: 4px 8px;
+    border: 1px solid var(--inf-gray-300);
+    color: var(--fg-2);
+    border-radius: 2px;
+    letter-spacing: 0.04em;
+  }
+  @media (max-width: 980px) {
+    .sectors-grid { grid-template-columns: repeat(2, 1fr); }
+    .sector:nth-child(2n) { border-right: none; }
+    .sector:nth-child(-n+2) { border-bottom: 1px solid var(--inf-gray-200); }
+  }
+  @media (max-width: 600px) {
+    .sectors-grid { grid-template-columns: 1fr; }
+    .sector { border-right: none; border-bottom: 1px solid var(--inf-gray-200); }
+  }
+
+  /* Reassurance strip */
+  .reassure {
+    margin-top: 80px;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 64px;
+    align-items: start;
+    padding-top: 48px;
+    border-top: 1px solid var(--inf-gray-300);
+  }
+  .reassure h4 {
+    font-family: var(--font-display);
+    font-size: clamp(22px, 2vw, 28px);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin: 0;
+  }
+  .reassure .body {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--fg-1);
+    max-width: 640px;
+  }
+  .reassure .body strong { color: var(--inf-orange); font-weight: 600; }
+  @media (max-width: 860px) {
+    .reassure { grid-template-columns: 1fr; gap: 24px; }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
+     SECTION 04 — COMMENT ON BOSSE (manifesto pairs)
+     ───────────────────────────────────────────────────────────────── */
+  .method {
+    background: var(--inf-white);
+  }
+  .pairs {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-top: 1px solid var(--inf-gray-200);
+  }
+  .pair {
+    display: grid;
+    grid-template-columns: 120px 1fr 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+    padding: 40px 0;
+    border-bottom: 1px solid var(--inf-gray-200);
+    position: relative;
+    overflow: hidden;
+  }
+  .pair .num {
+    font-family: var(--font-accent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: var(--ls-widest);
+    color: var(--fg-3);
+  }
+  .pair .yes {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 4.5vw, 64px);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    color: var(--inf-orange);
+  }
+  .pair .vs {
+    font-family: var(--font-accent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: var(--ls-widest);
+    text-transform: uppercase;
+    color: var(--fg-3);
+    text-align: center;
+  }
+  .pair .no {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 4.5vw, 64px);
+    font-weight: 300;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    color: var(--inf-gray-300);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--inf-gray-400);
+  }
+  .pair .gloss {
+    grid-column: 2 / -1;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--fg-2);
+    max-width: 720px;
+    margin-top: -24px;
+    padding-bottom: 24px;
+  }
+  @media (max-width: 980px) {
+    .pair {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      padding: 32px 0;
+    }
+    .pair .vs { text-align: left; }
+    .pair .no { text-align: left; }
+    .pair .gloss { grid-column: 1; margin-top: 8px; padding-bottom: 0; }
+  }
+
+  /* Method — manifesto principles, less brutal */
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--inf-gray-200);
+    border-left: 1px solid var(--inf-gray-200);
+  }
+  .principle {
+    padding: 48px 40px;
+    border-right: 1px solid var(--inf-gray-200);
+    border-bottom: 1px solid var(--inf-gray-200);
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 24px;
+    align-items: start;
+    background: var(--inf-white);
+    transition: background 300ms var(--ease-out);
+  }
+  .principle:hover { background: var(--inf-gray-50); }
+  .principle .num {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 300;
+    line-height: 1;
+    color: var(--inf-orange);
+    letter-spacing: -0.02em;
+    padding-top: 4px;
+  }
+  .principle h4 {
+    font-family: var(--font-display);
+    font-size: clamp(22px, 1.9vw, 28px);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.018em;
+    margin: 0 0 14px;
+    color: var(--inf-black);
+  }
+  .principle h4 .accent { color: var(--inf-orange); font-style: italic; }
+  .principle p {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--fg-2);
+    margin: 0;
+  }
+  @media (max-width: 760px) { .principles { grid-template-columns: 1fr; } }
+
+  /* Method figure — tall full-bleed scroll-reveal photo (parallax) */
+  .method-figure {
+    margin: 96px calc(50% - 50vw) 0;
+    padding: 0;
+    position: relative;
+    height: clamp(520px, 80vh, 760px);
+    overflow: hidden;
+  }
+  .method-figure .figure-track {
+    position: absolute;
+    top: 0;
+    left: 0; right: 0;
+    height: 160%;
+    will-change: transform;
+  }
+  .method-figure img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    filter: contrast(1.02) saturate(1.04);
+  }
+  .method-figure figcaption {
+    position: absolute;
+    left: var(--pad-x); bottom: 32px;
+    display: flex; flex-direction: column; gap: 6px;
+    color: #fff;
+    background: rgba(0,0,0,0.42);
+    backdrop-filter: blur(10px);
+    padding: 14px 20px;
+    border-left: 3px solid var(--inf-orange);
+    max-width: 520px;
+    z-index: 2;
+  }
+  .method-figure .cap-eyebrow {
+    font-family: var(--font-accent);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: var(--ls-widest);
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.75);
+  }
+  .method-figure .cap-line {
+    font-family: var(--font-display);
+    font-size: clamp(15px, 1.15vw, 18px);
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+  @media (max-width: 700px) {
+    .method-figure { height: 420px; }
+    .method-figure figcaption { left: 20px; right: 20px; bottom: 20px; max-width: none; }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
+     SECTION 05 — PUISSANCE IA (the signature moment)
+     ───────────────────────────────────────────────────────────────── */
+  .ia {
+    background: #0A0A0A;
+    color: var(--inf-white);
+    overflow: hidden;
+    position: relative;
+  }
+  .ia .section-head .index { color: rgba(255,255,255,0.55); }
+  .ia .section-head .index::before { background: var(--inf-orange); }
+  .ia .eyebrow-row { color: var(--inf-orange); }
+  .ia .title-section { color: var(--inf-white); }
+  .ia .lede {
+    max-width: 680px;
+    font-size: clamp(17px, 1.4vw, 21px);
+    line-height: 1.5;
+    color: rgba(255,255,255,0.78);
+    margin-top: 32px;
+  }
+  .ia .lede strong { color: var(--inf-orange); font-weight: 600; }
+
+  .ia-stage {
+    margin-top: 96px;
+    position: relative;
+    display: grid;
+    grid-template-columns: 240px 1fr 240px;
+    gap: 32px;
+    align-items: stretch;
+  }
+  .ia-stage .col {
+    display: flex; flex-direction: column;
+    justify-content: center;
+    gap: 24px;
+  }
+  .ia-stage .col.left { text-align: right; }
+  .ia-stage .col h4 {
+    font-family: var(--font-accent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: var(--ls-widest);
+    text-transform: uppercase;
+    color: var(--inf-orange);
+    margin: 0 0 8px;
+  }
+  .ia-stage .col p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.7);
+    margin: 0;
+  }
+  .ia-stage .col .bullet {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(22px, 1.8vw, 28px);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--inf-white);
+    line-height: 1.1;
+  }
+
+  .ia-net {
+    position: relative;
+    aspect-ratio: 1 / 0.85;
+    width: 100%;
+    background: radial-gradient(ellipse at center, rgba(246,83,10,0.06) 0%, transparent 60%);
+  }
+  .ia-net svg { width: 100%; height: 100%; display: block; }
+
+  .ia-controls {
+    margin-top: 56px;
+    display: flex; gap: 8px;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding-top: 24px;
+  }
+  .ia-controls button {
+    font-family: var(--font-accent);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: var(--ls-widest);
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    padding: 10px 18px;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: var(--r-pill);
+    transition: all 300ms var(--ease-out);
+  }
+  .ia-controls button:hover {
+    color: var(--inf-white);
+    border-color: rgba(255,255,255,0.5);
+  }
+  .ia-controls button.active {
+    background: var(--inf-orange);
+    color: var(--inf-white);
+    border-color: var(--inf-orange);
+  }
+
+  @media (max-width: 980px) {
+    .ia-stage { grid-template-columns: 1fr; }
+    .ia-stage .col.left { text-align: left; }
+    .ia-net { aspect-ratio: 1 / 1; }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
+     SECTION 06 — PREUVES
+     ───────────────────────────────────────────────────────────────── */
+  .proof {
+    background: var(--inf-white);
+  }
+  .proof-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 24px;
+    border-top: 1px solid var(--inf-gray-200);
+    padding-top: 0;
+  }
+  .case {
+    grid-column: span 6;
+    padding: 48px 0;
+    border-bottom: 1px solid var(--inf-gray-200);
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    gap: 16px;
+    transition: padding 400ms var(--ease-out);
+  }
+  .case:nth-child(2n) {
+    padding-left: 24px;
+    border-left: 1px solid var(--inf-gray-200);
+  }
+  .case .meta {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-accent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: var(--ls-widest);
+    text-transform: uppercase;
+  }
+  .case .meta .sector { color: var(--inf-orange); }
+  .case .meta .duration { color: var(--fg-3); }
+  .case h4 {
+    font-family: var(--font-display);
+    font-size: clamp(22px, 2vw, 30px);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    margin: 0;
+  }
+  .case .desc {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--fg-2);
+  }
+  .case .stat {
+    display: flex; align-items: baseline; gap: 14px;
+    padding-top: 16px;
+    border-top: 1px solid var(--inf-gray-200);
+  }
+  .case .stat .num {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 4vw, 64px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--inf-orange);
+    font-variant-numeric: tabular-nums;
+  }
+  .case .stat .label {
+    font-family: var(--font-accent);
+    font-size: 13px;
+    line-height: 1.3;
+    color: var(--fg-2);
+    letter-spacing: 0.02em;
+  }
+  @media (max-width: 860px) {
+    .case { grid-column: 1 / -1; }
+    .case:nth-child(2n) { padding-left: 0; border-left: none; }
+  }
+
+  /* Numbers strip */
+  .numbers {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-top: 96px;
+    border-top: 1px solid var(--inf-gray-300);
+    border-bottom: 1px solid var(--inf-gray-300);
+  }
+  .numbers .n {
+    padding: 48px 32px;
+    border-right: 1px solid var(--inf-gray-200);
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .numbers .n:last-child { border-right: none; }
+  .numbers .n .big {
+    font-family: var(--font-display);
+    font-size: clamp(56px, 7vw, 96px);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    color: var(--inf-orange);
+    font-variant-numeric: tabular-nums;
+  }
+  .numbers .n .small {
+    font-family: var(--font-accent);
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--fg-2);
+    text-wrap: balance;
+  }
+  @media (max-width: 860px) {
+    .numbers { grid-template-columns: repeat(2, 1fr); }
+    .numbers .n:nth-child(2n) { border-right: none; }
+    .numbers .n:nth-child(-n+2) { border-bottom: 1px solid var(--inf-gray-200); }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
+     SECTION 07 — CLIENTS (carrousel haute couture)
+     ───────────────────────────────────────────────────────────────── */
+  .clients {
+    background: var(--inf-black);
+    color: var(--inf-white);
+    overflow: hidden;
+    padding: 0;
+  }
+  .clients .container { padding-top: var(--pad-y); padding-bottom: 64px; }
+  .clients .section-head .index,
+  .clients .section-head .eyebrow-row,
+  .clients .section-head .title-section { color: var(--inf-white); }
+  .clients .section-head { border-bottom-color: rgba(255,255,255,0.12); }
+  .clients .section-head .title-section { color: var(--inf-white); }
+  .clients .lede-c {
+    color: rgba(255,255,255,0.7);
+    max-width: 540px;
+    font-size: clamp(15px, 1.2vw, 18px);
+    line-height: 1.55;
+    margin-top: 24px;
+  }
+  .clients .marquee-wrap {
+    margin-top: 80px;
+    padding: 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    overflow: hidden;
+    position: relative;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+  }
+  .clients .marquee-wrap::before,
+  .clients .marquee-wrap::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 120px;
+    z-index: 5;
+    pointer-events: none;
+  }
+  .clients .marquee-wrap::before { left: 0; background: linear-gradient(to right, var(--inf-black), transparent); }
+  .clients .marquee-wrap::after  { right: 0; background: linear-gradient(to left,  var(--inf-black), transparent); }
+  .clients .marquee {
+    display: flex;
+    gap: 0;
+    animation: marquee-scroll 90s linear infinite;
+    width: max-content;
+  }
+  .clients .marquee:hover { animation-play-state: paused; }
+  .clients .marquee .item {
+    flex: 0 0 auto;
+    padding: 64px 56px;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(28px, 3vw, 44px);
+    letter-spacing: -0.02em;
+    color: rgba(255,255,255,0.55);
+    transition: color 400ms var(--ease-out), background 400ms var(--ease-out);
+    white-space: nowrap;
+    display: flex; align-items: center; gap: 18px;
+    position: relative;
+  }
+  .clients .marquee .item:hover { color: var(--inf-white); background: rgba(246,83,10,0.08); }
+  .clients .marquee .item .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--inf-orange);
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 300ms var(--ease-out);
+  }
+  .clients .marquee .item:hover .dot { opacity: 1; }
+  @keyframes marquee-scroll {
+    from { transform: translate3d(0,0,0); }
+    to   { transform: translate3d(-50%,0,0); }
+  }
+  .clients .seg-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-top: 64px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .clients .seg {
+    padding: 32px 24px;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .clients .seg:last-child { border-right: none; }
+  .clients .seg .pct {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 4vw, 56px);
+    font-weight: 700;
+    color: var(--inf-orange);
+    line-height: 1;
+  }
+  .clients .seg .lbl {
+    font-family: var(--font-accent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: var(--ls-wide);
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+  }
+  @media (max-width: 700px) {
+    .clients .seg-row { grid-template-columns: 1fr; }
+    .clients .seg { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
+     SECTION 08 — ÉQUIPE
+     ───────────────────────────────────────────────────────────────── */
+  .team .team-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-top: 56px;
+    border-top: 1px solid var(--inf-gray-200);
+    border-bottom: 1px solid var(--inf-gray-200);
+  }
+  .team .team-stats .ts {
+    padding: 32px 24px;
+    border-right: 1px solid var(--inf-gray-200);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .team .team-stats .ts:last-child { border-right: none; }
+  .team .team-stats .ts .big {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 4.5vw, 64px);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--inf-black);
+  }
+  .team .team-stats .ts .big .accent { color: var(--inf-orange); }
+  .team .team-stats .ts .lbl {
+    font-family: var(--font-accent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: var(--ls-wide);
+    text-transform: uppercase;
+    color: var(--fg-2);
+    line-height: 1.4;
+  }
+  .team .gallery {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: clamp(360px, 48vw, 560px);
+    gap: 16px;
+    margin-top: 64px;
+  }
+  .team .gallery .ph {
+    overflow: hidden;
+    background: var(--inf-gray-100);
+    position: relative;
+  }
+  .team .gallery .ph img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    transition: transform 1200ms var(--ease-out);
+  }
+  .team .gallery .ph:hover img { transform: scale(1.04); }
+  .team .gallery .ph::after {
+    content: attr(data-loc);
+    position: absolute;
+    bottom: 16px; left: 16px;
+    font-family: var(--font-accent);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: var(--ls-wide);
+    text-transform: uppercase;
+    color: #fff;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(8px);
+    padding: 6px 10px;
+    border-radius: 2px;
+  }
+  @media (max-width: 800px) {
+    .team .gallery { grid-template-columns: 1fr; grid-template-rows: 280px 280px; }
+    .team .team-stats { grid-template-columns: repeat(2, 1fr); }
+    .team .team-stats .ts:nth-child(2n) { border-right: none; }
+    .team .team-stats .ts:nth-child(-n+2) { border-bottom: 1px solid var(--inf-gray-200); }
+  }
+  .team .ethos {
+    margin-top: 64px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    padding-top: 48px;
+    border-top: 1px solid var(--inf-gray-200);
+  }
+  .team .ethos h4 {
+    font-family: var(--font-display);
+    font-size: clamp(24px, 2.2vw, 32px);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin: 0 0 16px;
+    color: var(--inf-black);
+  }
+  .team .ethos h4 .accent { color: var(--inf-orange); }
+  .team .ethos p {
+    font-size: clamp(15px, 1.15vw, 17px);
+    line-height: 1.6;
+    color: var(--fg-1);
+    margin: 0;
+  }
+  @media (max-width: 800px) { .team .ethos { grid-template-columns: 1fr; gap: 32px; } }
+
+  /* ─────────────────────────────────────────────────────────────────
+     SECTION 09 — BUREAUX
+     ───────────────────────────────────────────────────────────────── */
+  .offices .offices-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-top: 64px;
+    border-top: 1px solid var(--inf-gray-200);
+    border-left: 1px solid var(--inf-gray-200);
+  }
+  .offices .office {
+    padding: 32px 28px 36px;
+    border-right: 1px solid var(--inf-gray-200);
+    border-bottom: 1px solid var(--inf-gray-200);
+    display: flex; flex-direction: column; gap: 14px;
+    position: relative;
+    transition: background 400ms var(--ease-out);
+    min-height: 360px;
+  }
+  .offices .office:hover { background: var(--inf-gray-50); }
+  .offices .office.coming { opacity: 0.5; }
+  .offices .office .city {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 2.6vw, 40px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--inf-black);
+  }
+  .offices .office .country {
+    font-family: var(--font-accent);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: var(--ls-widest);
+    text-transform: uppercase;
+    color: var(--fg-3);
+  }
+  .offices .office .since {
+    font-family: var(--font-accent);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: var(--ls-wide);
+    text-transform: uppercase;
+    color: var(--inf-orange);
+    margin-top: auto;
+  }
+  .offices .office .addr {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--fg-1);
+  }
+  .offices .office .marker {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--inf-orange);
+    position: absolute; top: 32px; right: 28px;
+  }
+  .offices .office.coming .marker { background: var(--inf-gray-300); }
+  @media (max-width: 900px) {
+    .offices .offices-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .offices .offices-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
+     SECTION 10 — RSE / ENGAGEMENT DURABLE
+     ───────────────────────────────────────────────────────────────── */
+  .rse {
+    background: var(--inf-gray-50);
+  }
+  .rse .rse-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-top: 64px;
+    border-top: 1px solid var(--inf-gray-200);
+    border-left: 1px solid var(--inf-gray-200);
+  }
+  .rse .pillar {
+    padding: 40px 32px 48px;
+    border-right: 1px solid var(--inf-gray-200);
+    border-bottom: 1px solid var(--inf-gray-200);
+    background: var(--inf-white);
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .rse .pillar .head {
+    display: flex; align-items: baseline; gap: 14px;
+    font-family: var(--font-accent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: var(--ls-wide);
+    text-transform: uppercase;
+    color: var(--fg-2);
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--inf-gray-200);
+  }
+  .rse .pillar .head .n { color: var(--inf-orange); font-weight: 700; }
+  .rse .pillar h4 {
+    font-family: var(--font-display);
+    font-size: clamp(22px, 1.9vw, 28px);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.18;
+    margin: 0;
+    color: var(--inf-black);
+  }
+  .rse .pillar h4 .accent { color: var(--inf-orange); }
+  .rse .pillar p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--fg-1);
+    margin: 0;
+  }
+  .rse .pillar .mark {
+    margin-top: auto;
+    padding-top: 14px;
+    font-family: var(--font-accent);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: var(--ls-wide);
+    text-transform: uppercase;
+    color: var(--fg-3);
+  }
+  .rse .pillar .mark strong { color: var(--inf-black); font-weight: 600; }
+  .rse .commit-strip {
+    margin-top: 48px;
+    padding: 28px 32px;
+    background: var(--inf-black);
+    color: var(--inf-white);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 32px;
+  }
+  .rse .commit-strip .body {
+    font-family: var(--font-display);
+    font-size: clamp(18px, 1.4vw, 22px);
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -0.015em;
+  }
+  .rse .commit-strip .body strong { color: var(--inf-orange); font-weight: 600; }
+  .rse .commit-strip .lbl {
+    font-family: var(--font-accent);
+    font-size: 11px;
+    letter-spacing: var(--ls-widest);
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    text-align: right;
+  }
+  @media (max-width: 800px) {
+    .rse .rse-grid { grid-template-columns: 1fr; }
+    .rse .commit-strip { grid-template-columns: 1fr; }
+    .rse .commit-strip .lbl { text-align: left; }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
+     SECTION 11 — CONTACT
+     ───────────────────────────────────────────────────────────────── */
+  .contact {
+    background: var(--inf-orange);
+    color: var(--inf-white);
+    overflow: hidden;
+    position: relative;
+  }
+  .contact::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('assets/hero-fan-orange.png') no-repeat right -10% center / contain;
+    opacity: 0.18;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+  .contact .section-head .index { color: rgba(255,255,255,0.65); }
+  .contact .section-head .index::before { background: var(--inf-white); }
+  .contact .eyebrow-row { color: rgba(255,255,255,0.85); }
+  .contact .title-section { color: var(--inf-white); max-width: 16ch; }
+  .contact .lede {
+    max-width: 580px;
+    margin-top: 32px;
+    font-size: clamp(17px, 1.4vw, 20px);
+    line-height: 1.5;
+    color: rgba(255,255,255,0.92);
+  }
+
+  .contact-actions {
+    margin-top: 64px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    border-top: 1px solid rgba(255,255,255,0.25);
+    border-bottom: 1px solid rgba(255,255,255,0.25);
+  }
+  .contact-actions a {
+    padding: 32px 24px;
+    display: grid;
+    grid-template-columns: 24px 1fr 24px;
+    align-items: center;
+    gap: 16px;
+    border-right: 1px solid rgba(255,255,255,0.25);
+    transition: background 300ms var(--ease-out), padding 300ms var(--ease-out);
+  }
+  .contact-actions a:last-child { border-right: none; }
+  .contact-actions a:hover {
+    background: rgba(0,0,0,0.18);
+    padding-left: 32px;
+  }
+  .contact-actions a:hover .arrow {
+    transform: translate(4px, -4px);
+  }
+  .contact-actions .ic {
+    font-family: var(--font-accent);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: var(--ls-widest);
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+  }
+  .contact-actions .text {
+    font-family: var(--font-display);
+    font-size: clamp(20px, 1.8vw, 28px);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    color: var(--inf-white);
+  }
+  .contact-actions .arrow {
+    font-size: 24px;
+    color: var(--inf-white);
+    transition: transform 300ms var(--ease-out);
+    text-align: right;
+  }
+  @media (max-width: 760px) {
+    .contact-actions { grid-template-columns: 1fr; }
+    .contact-actions a { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.25); }
+    .contact-actions a:last-child { border-bottom: none; }
+  }
+
+  /* Footer */
+  .foot {
+    background: var(--inf-black);
+    color: rgba(255,255,255,0.7);
+    padding: 64px var(--pad-x) 32px;
+  }
+  .foot-grid {
+    max-width: 1440px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    padding-bottom: 64px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+  }
+  .foot .brand img { width: 160px; filter: invert(1); }
+  .foot .brand p { font-size: 14px; line-height: 1.6; max-width: 320px; margin-top: 24px; }
+  .foot h5 {
+    font-family: var(--font-accent);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: var(--ls-widest);
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin: 0 0 18px;
+  }
+  .foot ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; font-size: 14px; }
+  .foot li a { transition: color 200ms var(--ease-out); }
+  .foot li a:hover { color: var(--inf-orange); }
+  .foot-base {
+    max-width: 1440px;
+    margin: 32px auto 0;
+    display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+    font-family: var(--font-accent);
+    font-size: 11px;
+    letter-spacing: var(--ls-wide);
+    color: rgba(255,255,255,0.4);
+  }
+  @media (max-width: 760px) {
+    .foot-grid { grid-template-columns: 1fr 1fr; }
+    .foot .brand { grid-column: 1 / -1; }
+  }
+
+  /* Cursor follower */
+  .cursor-dot {
+    position: fixed;
+    top: 0; left: 0;
+    width: 6px; height: 6px;
+    background: var(--inf-orange);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 999;
+    transform: translate(-50%, -50%);
+    transition: opacity 300ms var(--ease-out), transform 200ms var(--ease-out);
+    opacity: 0;
+    will-change: transform;
+    mix-blend-mode: difference;
+  }
+  @media (hover: hover) {
+    body:hover .cursor-dot { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ───────────────── Cursor follower ───────────────── -->
+<div class="cursor-dot" id="cursorDot"></div>
+
+<!-- ───────────────── Navigation ───────────────── -->
+<nav class="nav" data-screen-label="Nav">
+  <a href="#hero" class="logo" aria-label="Infinitif">
+    <img src="assets/logo-infinitif-black.svg" alt="Infinitif" />
+  </a>
+  <div class="links">
+    <a href="#movements" data-link="movements">Ce qu'on fait</a>
+    <a href="#sectors" data-link="sectors">Pour qui</a>
+    <a href="#method" data-link="method">Méthode</a>
+    <a href="#ia" data-link="ia">IA</a>
+    <a href="#proof" data-link="proof">Preuves</a>
+    <a href="#clients" data-link="clients">Clients</a>
+    <a href="#team" data-link="team">Équipe</a>
+    <a href="#offices" data-link="offices">Bureaux</a>
+  </div>
+  <a href="#contact" class="cta">Parlons-en</a>
+</nav>
+
+<!-- ───────────────── Side rail ───────────────── -->
+<aside class="rail" id="rail" aria-hidden="true">
+  <a href="#hero" class="item active" data-section="hero"><span class="num">01</span><span class="bar"></span><span class="label">Manifeste</span></a>
+  <a href="#movements" class="item" data-section="movements"><span class="num">02</span><span class="bar"></span><span class="label">Ce qu'on fait</span></a>
+  <a href="#sectors" class="item" data-section="sectors"><span class="num">03</span><span class="bar"></span><span class="label">Pour qui</span></a>
+  <a href="#method" class="item" data-section="method"><span class="num">04</span><span class="bar"></span><span class="label">Méthode</span></a>
+  <a href="#ia" class="item" data-section="ia"><span class="num">05</span><span class="bar"></span><span class="label">Puissance IA</span></a>
+  <a href="#proof" class="item" data-section="proof"><span class="num">06</span><span class="bar"></span><span class="label">Preuves</span></a>
+  <a href="#clients" class="item" data-section="clients"><span class="num">07</span><span class="bar"></span><span class="label">Clients</span></a>
+  <a href="#team" class="item" data-section="team"><span class="num">08</span><span class="bar"></span><span class="label">Équipe</span></a>
+  <a href="#offices" class="item" data-section="offices"><span class="num">09</span><span class="bar"></span><span class="label">Bureaux</span></a>
+  <a href="#rse" class="item" data-section="rse"><span class="num">10</span><span class="bar"></span><span class="label">RSE</span></a>
+  <a href="#contact" class="item" data-section="contact"><span class="num">11</span><span class="bar"></span><span class="label">Contact</span></a>
+</aside>
+
+<!-- ═══════════════════════════════════════════════
+     01 — HERO
+     ═══════════════════════════════════════════════ -->
+<section class="hero" id="hero" data-screen-label="01 Hero">
+  <div class="container">
+    <div class="top-meta fade-up in">
+      <div class="left">
+        <span class="live">Paris · Bordeaux · Toulouse · Lille</span>
+      </div>
+      <div class="right">
+        <span>Cabinet de conseil — depuis 2018</span>
+      </div>
+    </div>
+
+    <div class="hero-headline">
+      <h1 class="title-display hero-h1" aria-label="Artisans contemporains du conseil en management.">
+        <span class="hero-line l1"><i class="verb">Artisans</i></span><br>
+        <span class="hero-line l2">contemporains</span><br>
+        <span class="hero-line l3">du conseil en <i class="verb accent-orange">management.</i></span>
+      </h1>
+    </div>
+
+    <div class="hero-foot">
+      <p class="lede fade-up d3">
+        Chez Infinitif, la transformation est avant tout une <strong>expérience humaine vécue ensemble</strong>,
+        loin des plans standards ou des incantations de changements.<br><br>
+        Réussir une transformation durable exige une posture engagée, une méthode exigeante,
+        et un accompagnement ancré dans la réalité des équipes et des organisations.
+      </p>
+      <div class="scroll-hint fade-up d4">
+        <span>Faire défiler</span>
+        <span class="arrow"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero signature — single editorial photo -->
+  <div class="hero-mosaic" aria-hidden="true">
+    <div class="tile t1"><img src="img/hero-laptop.png" alt="" loading="eager" /></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     02 — CE QU'ON FAIT
+     ═══════════════════════════════════════════════ -->
+<section class="movements" id="movements" data-screen-label="02 Movements">
+  <div class="container">
+    <header class="section-head">
+      <div class="index">02 / 11</div>
+      <div>
+        <div class="eyebrow-row"><span class="dot"></span><span>Transformation Factory</span></div>
+        <h2 class="title-section">
+          Six expertises.<br>
+          Et une <i class="verb accent-orange">force de frappe IA</i> qui les irrigue.
+        </h2>
+        <p class="lede" style="max-width:680px;margin-top:24px;font-size:clamp(16px,1.3vw,19px);line-height:1.5;color:var(--fg-1);">
+          La <strong style="color:var(--inf-orange);font-weight:600;">Transformation Factory</strong> — six blocs de valeur,
+          modulables, articulés autour d'une même promesse : conseiller et livrer dans le même mouvement.
+        </p>
+      </div>
+    </header>
+
+    <div class="expertises">
+      <div class="expertise">
+        <div class="head"><span class="n">01</span><span>Design d'organisation</span></div>
+        <h4>Bâtir une organisation qui tient debout face à demain.</h4>
+        <p>Imaginer la cible, challenger les modèles existants, déployer une organisation alignée sur la stratégie — résiliente, ouverte, capable d'absorber le mouvement.</p>
+        <div class="verbs"><span class="v">Imaginer.</span><span class="v">Challenger.</span><span class="v">Déployer.</span></div>
+      </div>
+
+      <div class="expertise">
+        <div class="head"><span class="n">02</span><span>Orchestration des transformations</span></div>
+        <h4>Tenir le cap quand la complexité s'invite.</h4>
+        <p>Structurer la trajectoire, piloter la gouvernance, retourner les programmes qui dérivent, livrer les impacts attendus. La maîtrise des risques, des coûts, des délais — pour de vrai.</p>
+        <div class="verbs"><span class="v">Structurer.</span><span class="v">Piloter.</span><span class="v">Livrer.</span></div>
+      </div>
+
+      <div class="expertise">
+        <div class="head"><span class="n">03</span><span>Performance &amp; excellence opérationnelle</span></div>
+        <h4>Mesurer, comprendre, élever le niveau.</h4>
+        <p>Diagnostic chiffré, identification des leviers, plan d'action ciblé. On installe une culture de performance qui dure — pas un sprint qui retombe.</p>
+        <div class="verbs"><span class="v">Mesurer.</span><span class="v">Analyser.</span><span class="v">Améliorer.</span></div>
+      </div>
+
+      <div class="expertise">
+        <div class="head"><span class="n">04</span><span>Ingénierie &amp; automatisation des processus</span></div>
+        <h4>Des processus qui libèrent du temps à valeur.</h4>
+        <p>Cartographier, modéliser (BPMN, UML), simplifier, automatiser. RPA, workflow, IA — branchés là où ça compte, pas partout pour faire moderne.</p>
+        <div class="verbs"><span class="v">Analyser.</span><span class="v">Modéliser.</span><span class="v">Optimiser.</span></div>
+      </div>
+
+      <div class="expertise">
+        <div class="head"><span class="n">05</span><span>Design d'expériences collab. &amp; clients</span></div>
+        <h4>Des expériences qui se souviennent de l'humain.</h4>
+        <p>Explorer les besoins, prototyper les parcours, tester avec de vrais utilisateurs. On aligne l'humain, l'organisation et la stratégie — dans cet ordre.</p>
+        <div class="verbs"><span class="v">Imaginer.</span><span class="v">Concevoir.</span><span class="v">Inspirer.</span></div>
+      </div>
+
+      <div class="expertise">
+        <div class="head"><span class="n">06</span><span>Changement positif &amp; durable</span></div>
+        <h4>Embarquer, sans abîmer.</h4>
+        <p>Cadrage des enjeux, plan de communication, formation, coaching. On gère les résistances en les écoutant — pas en passant en force.</p>
+        <div class="verbs"><span class="v">Préparer.</span><span class="v">Accompagner.</span><span class="v">Engager.</span></div>
+      </div>
+    </div>
+
+    <!-- 7th block — IA, distinct, full-width black -->
+    <div class="ia-tease">
+      <div>
+        <div class="label">07 — Puissance IA</div>
+        <h3>Et au cœur des six : <span class="accent-orange">une équipe IA qui code.</span></h3>
+        <p>Conseil IA, delivery custom, bibliothèque d'agents pré-implémentés (Shortcuts). On ne se contente pas de prescrire — on livre du code en production.</p>
+        <a href="#ia" class="link">Voir la stack</a>
+      </div>
+      <div class="stats">
+        <div class="s"><div class="big">12</div><div class="lbl">Agents Shortcuts<br>pré-implémentés</div></div>
+        <div class="s"><div class="big">4&ndash;8</div><div class="lbl">Semaines pour<br>la mise en production</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     03 — POUR QUI
+     ═══════════════════════════════════════════════ -->
+<section class="sectors" id="sectors" data-screen-label="03 Sectors">
+  <div class="container">
+    <header class="section-head">
+      <div class="index">03 / 11</div>
+      <div>
+        <div class="eyebrow-row"><span class="dot"></span><span>Secteurs régulés</span></div>
+        <h2 class="title-section">
+          On bosse partout<br>
+          où la <i class="verb accent-orange">complexité</i> s'invite.
+        </h2>
+      </div>
+    </header>
+
+    <div class="sectors-grid sectors-grid-6">
+      <div class="sector">
+        <div class="pct">Industrie &amp; énergie</div>
+        <h3 class="sector-name">Industrie</h3>
+        <p class="desc">
+          Transitions énergétiques, excellence opérationnelle, supply chain.
+          Des sujets long terme, qu'on tient sur la durée — sans s'éparpiller.
+        </p>
+        <div class="tags">
+          <span>ISO 9001</span><span>ISO 14001</span><span>Lean</span>
+        </div>
+      </div>
+      <div class="sector">
+        <div class="pct">Luxe &amp; mode</div>
+        <h3 class="sector-name">Luxe</h3>
+        <p class="desc">
+          Maisons à très forte exigence d'excellence. Transformations qui doivent
+          respecter le geste, le temps, et la singularité de la marque.
+        </p>
+        <div class="tags">
+          <span>Heritage</span><span>Excellence</span><span>Savoir-faire</span>
+        </div>
+      </div>
+      <div class="sector">
+        <div class="pct">Retail &amp; distribution</div>
+        <h3 class="sector-name">Retail</h3>
+        <p class="desc">
+          Réseau magasin, omnicanal, supply, expérience adhérent. On articule
+          siège et terrain — où les vraies décisions se jouent.
+        </p>
+        <div class="tags">
+          <span>Omnicanal</span><span>Supply</span><span>RGPD</span>
+        </div>
+      </div>
+      <div class="sector">
+        <div class="pct">Services financiers</div>
+        <h3 class="sector-name">Banque &amp; assurance</h3>
+        <p class="desc">
+          Banque de détail, assurance, mutuelles, protection sociale. Régulation
+          forte, parcours client à réinventer, IA à déployer en zone sensible.
+        </p>
+        <div class="tags">
+          <span>ACPR</span><span>DORA</span><span>Solvency&nbsp;II</span><span>IFRS 17</span>
+        </div>
+      </div>
+      <div class="sector">
+        <div class="pct">Santé &amp; sciences du vivant</div>
+        <h3 class="sector-name">Santé</h3>
+        <p class="desc">
+          Établissements, complémentaires, laboratoires. Données sensibles,
+          parcours patient, articulation public-privé. Rigueur en plus.
+        </p>
+        <div class="tags">
+          <span>HDS</span><span>HAS</span><span>RGPD&nbsp;santé</span>
+        </div>
+      </div>
+      <div class="sector">
+        <div class="pct">Secteur public &amp; services</div>
+        <h3 class="sector-name">Public &amp; services</h3>
+        <p class="desc">
+          Administrations, opérateurs, services aux entreprises. Transformations
+          longues, parties prenantes nombreuses, exigence d'utilité.
+        </p>
+        <div class="tags">
+          <span>Service public</span><span>RGPD</span><span>Concertation</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="reassure">
+      <h4>Pas de chasse&nbsp;gardée.<br><span class="accent-orange">Du métier partout où on intervient.</span></h4>
+      <div class="body">
+        Nos consultants ont en moyenne <strong>plus de 5 années d'expérience sectorielle</strong>
+        avant de nous rejoindre. On arrive avec le vocabulaire, les contraintes,
+        les bonnes questions. Et quand un secteur impose une régulation
+        spécifique — ACPR, DORA, AI&nbsp;Act, HDS, RGPD — c'est de la maison, pas une
+        découverte sur votre temps. Ratio partner / consultant : <strong>1 pour 5</strong>.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     04 — MÉTHODE / MANIFESTE
+     ═══════════════════════════════════════════════ -->
+<section class="method" id="method" data-screen-label="04 Method">
+  <div class="container">
+    <header class="section-head">
+      <div class="index">04 / 11</div>
+      <div>
+        <div class="eyebrow-row"><span class="dot"></span><span>Comment on bosse</span></div>
+        <h2 class="title-section">
+          Une posture,<br>
+          pas un <i class="verb accent-orange">discours</i>.
+        </h2>
+        <p class="lede" style="max-width:640px;margin-top:24px;font-size:clamp(16px,1.3vw,19px);line-height:1.5;color:var(--fg-1);">
+          Six principes qu'on tient en mission. Pas un manifeste affiché au mur — une manière de travailler, vérifiable au quotidien.
+        </p>
+      </div>
+    </header>
+
+    <div class="principles">
+      <div class="principle">
+        <div class="num">01</div>
+        <div>
+          <h4>On <span class="accent">écoute</span> avant de proposer.</h4>
+          <p>Les meilleures intuitions de transformation viennent du terrain. On commence par y aller. On parle aux gestionnaires, aux conseillers, aux managers de proximité. Ensuite seulement, on rédige un point de vue.</p>
+        </div>
+      </div>
+      <div class="principle">
+        <div class="num">02</div>
+        <div>
+          <h4>On <span class="accent">livre</span>, on ne se contente pas de prescrire.</h4>
+          <p>Conseil et delivery sous le même toit. Ce qu'on recommande, on est capable de le construire — et de le mettre en production. Cela change la qualité du conseil que l'on donne, parce qu'on sait ce qu'il en coûte.</p>
+        </div>
+      </div>
+      <div class="principle">
+        <div class="num">03</div>
+        <div>
+          <h4>On respecte les <span class="accent">rythmes</span>.</h4>
+          <p>Une organisation qui se transforme garde une activité à faire tourner. On cale nos jalons sur les vôtres, pas l'inverse. On vous pousse quand il faut pousser, on relâche quand il faut relâcher.</p>
+        </div>
+      </div>
+      <div class="principle">
+        <div class="num">04</div>
+        <div>
+          <h4>On dit ce qu'on <span class="accent">pense</span>.</h4>
+          <p>Y compris quand ça ne va pas dans le sens du sponsor. C'est ce qu'on attend d'un cabinet senior. Direct, argumenté, sans casser la relation. C'est notre version de l'« incisif ».</p>
+        </div>
+      </div>
+      <div class="principle">
+        <div class="num">05</div>
+        <div>
+          <h4>On reste <span class="accent">présents</span>.</h4>
+          <p>Pas de signature lointaine. Le partner qui démarre la mission est celui qui la termine. Ratio 1 pour 5, supervision réelle, COPIL animé — pas un PowerPoint envoyé par e-mail.</p>
+        </div>
+      </div>
+      <div class="principle">
+        <div class="num">06</div>
+        <div>
+          <h4>On rend les équipes <span class="accent">autonomes</span>.</h4>
+          <p>Le but n'est pas d'être indispensables. Transfert de compétence, documentation, montée en charge progressive. Quand on part, l'équipe interne sait faire — et nous appelle si elle a besoin, pas par dépendance.</p>
+        </div>
+      </div>
+    </div>
+
+    <figure class="method-figure" data-parallax>
+      <div class="figure-track">
+        <img src="img/method-pitch.png" alt="Présentation Infinitif — méthode en 4 étapes" loading="lazy" />
+      </div>
+      <figcaption>
+        <span class="cap-eyebrow">En mission · Atelier de cadrage</span>
+        <span class="cap-line">Strategy · Design · Operate · Sustain — la séquence qu'on tient.</span>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     05 — PUISSANCE IA  (signature animation)
+     ═══════════════════════════════════════════════ -->
+<section class="ia" id="ia" data-screen-label="05 IA">
+  <div class="container">
+    <header class="section-head">
+      <div class="index">05 / 11</div>
+      <div>
+        <div class="eyebrow-row"><span class="dot"></span><span>Puissance IA</span></div>
+        <h2 class="title-section">
+          Une bibliothèque d'<i class="verb accent-orange">agents</i> — branchée<br>
+          sur votre infrastructure réelle.
+        </h2>
+        <p class="lede">
+          La plupart des cabinets <strong>conseillent sans livrer</strong>. Quelques-uns
+          <strong>livrent sans conseiller</strong>. Nous faisons les deux, dans la même équipe,
+          sous le même toit. Voici la stack.
+        </p>
+      </div>
+    </header>
+
+    <div class="ia-controls" id="iaControls">
+      <button class="active" data-mode="all">Tout afficher</button>
+      <button data-mode="conseil">Conseil</button>
+      <button data-mode="delivery">Delivery</button>
+      <button data-mode="shortcuts">Shortcuts</button>
+    </div>
+
+    <div class="ia-stage">
+      <div class="col left">
+        <div>
+          <h4>Conseil</h4>
+          <span class="bullet">Diagnostic, cible, trajectoire.</span>
+          <p>Cartographie, schéma directeur, business case, conduite du changement.</p>
+        </div>
+        <div>
+          <h4>Sécurité</h4>
+          <span class="bullet">Souverain. Auditable.</span>
+          <p>Hébergement HDS, traçabilité AI&nbsp;Act, revues conformité ACPR.</p>
+        </div>
+      </div>
+
+      <div class="ia-net" id="iaNet">
+        <svg id="iaSvg" viewBox="0 0 800 680" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <defs>
+            <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#F6530A" stop-opacity="0.45" />
+              <stop offset="60%" stop-color="#F6530A" stop-opacity="0.08" />
+              <stop offset="100%" stop-color="#F6530A" stop-opacity="0" />
+            </radialGradient>
+            <filter id="softGlow">
+              <feGaussianBlur stdDeviation="3" />
+            </filter>
+          </defs>
+
+          <!-- Background light grid -->
+          <g opacity="0.06" stroke="#fff" stroke-width="0.5">
+            <line x1="0" y1="170" x2="800" y2="170"/>
+            <line x1="0" y1="340" x2="800" y2="340"/>
+            <line x1="0" y1="510" x2="800" y2="510"/>
+            <line x1="200" y1="0" x2="200" y2="680"/>
+            <line x1="400" y1="0" x2="400" y2="680"/>
+            <line x1="600" y1="0" x2="600" y2="680"/>
+          </g>
+
+          <!-- Edges & nodes injected by JS -->
+          <g id="iaEdges"></g>
+          <g id="iaNodes"></g>
+        </svg>
+      </div>
+
+      <div class="col right">
+        <div>
+          <h4>Delivery custom</h4>
+          <span class="bullet">RAG. Agents. Fine-tune.</span>
+          <p>Python, LLM ops, observabilité. Mise en production sous 8 à 16 semaines.</p>
+        </div>
+        <div>
+          <h4>Shortcuts</h4>
+          <span class="bullet">12 agents pré-implémentés.</span>
+          <p>Triage sinistres, synthèse réglementaire, KYC, analyse contrats, support adhérent.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     06 — PREUVES
+     ═══════════════════════════════════════════════ -->
+<section class="proof" id="proof" data-screen-label="06 Proof">
+  <div class="container">
+    <header class="section-head">
+      <div class="index">06 / 11</div>
+      <div>
+        <div class="eyebrow-row"><span class="dot"></span><span>Preuves</span></div>
+        <h2 class="title-section">
+          Pas de promesses.<br>
+          Des <i class="verb accent-orange">livraisons</i>.
+        </h2>
+      </div>
+    </header>
+
+    <div class="proof-grid">
+      <article class="case">
+        <div class="meta">
+          <span class="sector">Assurance &mdash; Top 10 FR</span>
+          <span class="duration">14 sem.</span>
+        </div>
+        <h4>Refonte du parcours sinistre dommages corporels.</h4>
+        <p class="desc">
+          Cartographie de bout en bout, automatisation du tri documentaire par IA,
+          réécriture du parcours gestionnaire. Pilote sur trois agences puis bascule.
+        </p>
+        <div class="stat">
+          <span class="num">&minus;38&nbsp;%</span>
+          <span class="label">Délai moyen<br>de prise en charge</span>
+        </div>
+      </article>
+
+      <article class="case">
+        <div class="meta">
+          <span class="sector">Mutuelle &mdash; Protection sociale</span>
+          <span class="duration">9 sem.</span>
+        </div>
+        <h4>Agent IA d'aide à la rédaction des courriers adhérents.</h4>
+        <p class="desc">
+          RAG sur la base contractuelle, ton de marque appris sur 4 000 courriers,
+          revue conformité automatisée. Déployé sur 120 gestionnaires en deux vagues.
+        </p>
+        <div class="stat">
+          <span class="num">&times;3,2</span>
+          <span class="label">Vélocité<br>de traitement courrier</span>
+        </div>
+      </article>
+
+      <article class="case">
+        <div class="meta">
+          <span class="sector">Banque &mdash; KYC</span>
+          <span class="duration">12 sem.</span>
+        </div>
+        <h4>Refonte du dispositif d'entrée en relation entreprises.</h4>
+        <p class="desc">
+          Diagnostic conformité LCB-FT, refonte du parcours digital, intégration
+          d'un shortcut « extraction Kbis » et d'un agent de revue documentaire.
+        </p>
+        <div class="stat">
+          <span class="num">11&nbsp;j</span>
+          <span class="label">délai moyen ouverture<br>contre 32&nbsp;jours avant</span>
+        </div>
+      </article>
+
+      <article class="case">
+        <div class="meta">
+          <span class="sector">Santé &mdash; Complémentaire</span>
+          <span class="duration">6 sem.</span>
+        </div>
+        <h4>Schéma directeur IA &amp; mise en conformité AI&nbsp;Act.</h4>
+        <p class="desc">
+          Inventaire des cas d'usage, classification de risque, gouvernance des
+          modèles, plan de remédiation. Validation comex et présentation board.
+        </p>
+        <div class="stat">
+          <span class="num">100&nbsp;%</span>
+          <span class="label">cas d'usage<br>cartographiés &amp; classés</span>
+        </div>
+      </article>
+    </div>
+
+    <div class="numbers">
+      <div class="n">
+        <div class="big" data-count="120">120</div>
+        <div class="small">Consultants &amp; ingénieurs IA, dont une équipe delivery interne.</div>
+      </div>
+      <div class="n">
+        <div class="big" data-count="12">12</div>
+        <div class="small">Agents IA pré-implémentés dans la bibliothèque Shortcuts.</div>
+      </div>
+      <div class="n">
+        <div class="big" data-count="5" data-suffix="ans+">5&nbsp;ans+</div>
+        <div class="small">D'expérience sectorielle minimum par consultant.</div>
+      </div>
+      <div class="n">
+        <div class="big" data-count="1" data-suffix="/5">1/5</div>
+        <div class="small">Ratio partner / consultant. Supervision réelle sur le terrain.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     07 — CLIENTS (carrousel haute couture)
+     ═══════════════════════════════════════════════ -->
+<section class="clients" id="clients" data-screen-label="07 Clients">
+  <div class="container">
+    <header class="section-head">
+      <div class="index" style="color:rgba(255,255,255,0.55);">07 / 11</div>
+      <div>
+        <div class="eyebrow-row" style="color:rgba(255,255,255,0.55);"><span class="dot"></span><span>Ils nous font confiance</span></div>
+        <h2 class="title-section">
+          Une maison<br>
+          que <i class="verb accent-orange">choisissent</i><br>
+          ceux qui choisissent.
+        </h2>
+        <p class="lede-c">
+          Groupes mutualistes, banques universelles, assureurs leaders, maisons de luxe et industriels exigeants.
+          Pas un trophy wall — une réalité de mission, sur la durée.
+        </p>
+      </div>
+    </header>
+  </div>
+
+  <!-- Marquee plein-écran, deux passes pour boucle infinie -->
+  <div class="marquee-wrap" aria-hidden="true">
+    <div class="marquee">
+      <span class="item"><span class="dot"></span>Groupe&nbsp;VYV</span>
+      <span class="item"><span class="dot"></span>Harmonie&nbsp;Mutuelle</span>
+      <span class="item"><span class="dot"></span>MGEN</span>
+      <span class="item"><span class="dot"></span>MNT</span>
+      <span class="item"><span class="dot"></span>Mutex</span>
+      <span class="item"><span class="dot"></span>GGVIE</span>
+      <span class="item"><span class="dot"></span>AGIRC-ARRCO</span>
+      <span class="item"><span class="dot"></span>AGPM&nbsp;·&nbsp;Klésia</span>
+      <span class="item"><span class="dot"></span>Carac-Selencia</span>
+      <span class="item"><span class="dot"></span>Gamest</span>
+      <span class="item"><span class="dot"></span>MADP</span>
+      <span class="item"><span class="dot"></span>GIE&nbsp;Carte&nbsp;Bleue</span>
+      <span class="item"><span class="dot"></span>BPCE</span>
+      <span class="item"><span class="dot"></span>Socram</span>
+      <span class="item"><span class="dot"></span>Kering</span>
+      <span class="item"><span class="dot"></span>Air&nbsp;Liquide</span>
+      <span class="item"><span class="dot"></span>Intermarché</span>
+      <!-- duplicate -->
+      <span class="item"><span class="dot"></span>Groupe&nbsp;VYV</span>
+      <span class="item"><span class="dot"></span>Harmonie&nbsp;Mutuelle</span>
+      <span class="item"><span class="dot"></span>MGEN</span>
+      <span class="item"><span class="dot"></span>MNT</span>
+      <span class="item"><span class="dot"></span>Mutex</span>
+      <span class="item"><span class="dot"></span>GGVIE</span>
+      <span class="item"><span class="dot"></span>AGIRC-ARRCO</span>
+      <span class="item"><span class="dot"></span>AGPM&nbsp;·&nbsp;Klésia</span>
+      <span class="item"><span class="dot"></span>Carac-Selencia</span>
+      <span class="item"><span class="dot"></span>Gamest</span>
+      <span class="item"><span class="dot"></span>MADP</span>
+      <span class="item"><span class="dot"></span>GIE&nbsp;Carte&nbsp;Bleue</span>
+      <span class="item"><span class="dot"></span>BPCE</span>
+      <span class="item"><span class="dot"></span>Socram</span>
+      <span class="item"><span class="dot"></span>Kering</span>
+      <span class="item"><span class="dot"></span>Air&nbsp;Liquide</span>
+      <span class="item"><span class="dot"></span>Intermarché</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="seg-row">
+      <div class="seg">
+        <div class="pct">~70%</div>
+        <div class="lbl">Assurance &amp; protection sociale</div>
+      </div>
+      <div class="seg">
+        <div class="pct">~15%</div>
+        <div class="lbl">Banque &amp; services financiers</div>
+      </div>
+      <div class="seg">
+        <div class="pct">~15%</div>
+        <div class="lbl">Retail, luxe, industrie</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     08 — ÉQUIPE
+     ═══════════════════════════════════════════════ -->
+<section class="team" id="team" data-screen-label="08 Team">
+  <div class="container">
+    <header class="section-head">
+      <div class="index">08 / 11</div>
+      <div>
+        <div class="eyebrow-row"><span class="dot"></span><span>Notre équipe</span></div>
+        <h2 class="title-section">
+          Des seniors,<br>
+          des <i class="verb accent-orange">artisans</i>,<br>
+          jamais des juniors envoyés au front.
+        </h2>
+      </div>
+    </header>
+
+    <div class="team-stats">
+      <div class="ts">
+        <div class="big">120<span class="accent">+</span></div>
+        <div class="lbl">Consultants &amp;<br>ingénieurs IA</div>
+      </div>
+      <div class="ts">
+        <div class="big">5<span class="accent">+</span><span style="font-size:0.5em;">&nbsp;ans</span></div>
+        <div class="lbl">Expérience sectorielle<br>minimum par consultant</div>
+      </div>
+      <div class="ts">
+        <div class="big">1<span class="accent">/</span>5</div>
+        <div class="lbl">Ratio partner /<br>consultant</div>
+      </div>
+      <div class="ts">
+        <div class="big">42<span class="accent">%</span></div>
+        <div class="lbl">De femmes au sein<br>du cabinet</div>
+      </div>
+    </div>
+
+    <div class="gallery">
+      <div class="ph g1" data-loc="Workshop — Atelier stratégie"><img src="img/team-workshop.png" alt="Atelier stratégique en équipe" loading="lazy" /></div>
+      <div class="ph g2" data-loc="Tablette — Pitch"><img src="img/team-tablet.png" alt="Pitch sur tablette" loading="lazy" /></div>
+    </div>
+
+    <div class="ethos">
+      <div>
+        <h4>Pas un cabinet pyramidal.<br><span class="accent">Une équipe à plat, ratio 1/5.</span></h4>
+        <p>Chaque mission est tenue par un partner, en présence réelle. Pas de seniorité de façade qui disparaît après le kick-off. Le consultant qui vous présente le travail est celui qui l'a fait — c'est tout.</p>
+      </div>
+      <div>
+        <h4>Recruter sur le métier,<br><span class="accent">pas sur le pédigrée.</span></h4>
+        <p>On embauche des profils qui ont déjà tenu un poste opérationnel : DSI, gestionnaire, chef de projet, data scientist. Le diplôme compte ; l'expérience compte plus. Et on vérifie que les gens écoutent — c'est non négociable.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     09 — BUREAUX
+     ═══════════════════════════════════════════════ -->
+<section class="offices" id="offices" data-screen-label="09 Offices">
+  <div class="container">
+    <header class="section-head">
+      <div class="index">09 / 11</div>
+      <div>
+        <div class="eyebrow-row"><span class="dot"></span><span>Nos bureaux</span></div>
+        <h2 class="title-section">
+          Trois villes,<br>
+          une <i class="verb accent-orange">même maison</i>.
+        </h2>
+        <p class="lede" style="max-width:560px;margin-top:24px;font-size:clamp(15px,1.2vw,18px);line-height:1.55;color:var(--fg-1);">
+          On bosse là où nos clients bossent. Implantations physiques, pas de faux fronts —
+          un Paris historique, un Sud-Ouest qui pousse, et bientôt le Nord.
+        </p>
+      </div>
+    </header>
+
+    <div class="offices-grid">
+      <div class="office">
+        <span class="marker"></span>
+        <span class="country">France · Île-de-France</span>
+        <div class="city">Paris</div>
+        <div class="addr">12, rue d'Anjou<br>75008 Paris<br><span style="color:var(--fg-3);">contact.paris@infinitif.com</span></div>
+        <div class="since">Bureau historique · 2018</div>
+      </div>
+      <div class="office">
+        <span class="marker"></span>
+        <span class="country">France · Nouvelle-Aquitaine</span>
+        <div class="city">Bordeaux</div>
+        <div class="addr">7, cours du Chapeau-Rouge<br>33000 Bordeaux<br><span style="color:var(--fg-3);">contact.bordeaux@infinitif.com</span></div>
+        <div class="since">Ouvert · 2023</div>
+      </div>
+      <div class="office">
+        <span class="marker"></span>
+        <span class="country">France · Occitanie</span>
+        <div class="city">Toulouse</div>
+        <div class="addr">22, allées Jean-Jaurès<br>31000 Toulouse<br><span style="color:var(--fg-3);">contact.toulouse@infinitif.com</span></div>
+        <div class="since">Ouvert · 2024</div>
+      </div>
+      <div class="office coming">
+        <span class="marker"></span>
+        <span class="country">France · Hauts-de-France</span>
+        <div class="city">Lille</div>
+        <div class="addr">À venir.<br>Recrutement en cours.<br><span style="color:var(--fg-3);">careers@infinitif.com</span></div>
+        <div class="since">Ouverture · 2027</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     10 — RSE / DÉVELOPPEMENT DURABLE
+     ═══════════════════════════════════════════════ -->
+<section class="rse" id="rse" data-screen-label="10 RSE">
+  <div class="container">
+    <header class="section-head">
+      <div class="index">10 / 11</div>
+      <div>
+        <div class="eyebrow-row"><span class="dot"></span><span>Engagement durable</span></div>
+        <h2 class="title-section">
+          La transformation<br>
+          n'est pas <i class="verb accent-orange">soutenable</i><br>
+          si elle ne l'est pas.
+        </h2>
+        <p class="lede" style="max-width:600px;margin-top:24px;font-size:clamp(15px,1.2vw,18px);line-height:1.55;color:var(--fg-1);">
+          On ne vend pas la RSE en option. C'est une grille de lecture qui imprègne chaque mission —
+          la performance ne vaut que si elle tient sur le long, sans abîmer ce qu'elle traverse.
+        </p>
+      </div>
+    </header>
+
+    <div class="rse-grid">
+      <div class="pillar">
+        <div class="head"><span class="n">01</span><span>Empreinte &amp; sobriété</span></div>
+        <h4>Bilan carbone <span class="accent">scope 1, 2, 3</span> &mdash; revu chaque année.</h4>
+        <p>Trajectoire SBTi alignée 1,5°C. Plan de déplacement décarboné (train par défaut, vol soumis à arbitrage). Zéro impression sur les missions, infrastructure cloud sur datacenters certifiés bas-carbone.</p>
+        <div class="mark"><strong>EcoVadis</strong> · médaille en cours</div>
+      </div>
+      <div class="pillar">
+        <div class="head"><span class="n">02</span><span>Mixité &amp; inclusion</span></div>
+        <h4>Parité visée à <span class="accent">tous les niveaux</span> de séniorité.</h4>
+        <p>42&nbsp;% de femmes dans le cabinet, 38&nbsp;% au niveau partner. Index égalité supérieur à 90/100. Ouverture de l'accès au métier via partenariats avec écoles publiques et reconversions seniors.</p>
+        <div class="mark"><strong>Index égalité F-H</strong> · 92/100</div>
+      </div>
+      <div class="pillar">
+        <div class="head"><span class="n">03</span><span>Mécénat de compétences</span></div>
+        <h4>5&nbsp;% de notre temps facturable, <span class="accent">offert au tiers secteur</span>.</h4>
+        <p>Accompagnement pro-bono d'associations en transformation (santé, précarité, environnement). Choix collégial des bénéficiaires, suivi sur 18&nbsp;mois minimum, livrables au même standard que nos missions payantes.</p>
+        <div class="mark"><strong>Pro-bono actif</strong> · 6 structures accompagnées</div>
+      </div>
+      <div class="pillar">
+        <div class="head"><span class="n">04</span><span>Achats &amp; chaîne</span></div>
+        <h4>Sous-traitants choisis sur <span class="accent">éthique, pas seulement prix</span>.</h4>
+        <p>Charte fournisseurs RGPD, droits humains, conditions de travail. Audit annuel des prestataires &gt; 50&nbsp;k€. Préférence locale pour la papeterie, l'événementiel, la restauration. Pas de greenwashing — des choix vérifiables.</p>
+        <div class="mark"><strong>Charte fournisseurs</strong> · v. 2026</div>
+      </div>
+    </div>
+
+    <div class="commit-strip">
+      <div class="body">
+        <strong>« Zéro impression. 100 % durable. »</strong> — pas un slogan,
+        une exigence vérifiable, opposable, mesurée chaque trimestre.
+      </div>
+      <div class="lbl">Rapport extra-financier<br>publié annuellement</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     11 — CONTACT
+     ═══════════════════════════════════════════════ -->
+<section class="contact" id="contact" data-screen-label="11 Contact">
+  <div class="container">
+    <header class="section-head">
+      <div class="index" style="color: rgba(255,255,255,0.85);">11 / 11</div>
+      <div>
+        <div class="eyebrow-row"><span class="dot" style="background:#fff;"></span><span>Contact</span></div>
+        <h2 class="title-section">
+          Vous avez un sujet<br>
+          qui résiste depuis trop longtemps&nbsp;?
+        </h2>
+        <p class="lede">
+          Décrivez-le en deux phrases. On revient sous 48&nbsp;heures avec un point de vue —
+          et, si ça vaut le coup, une proposition concrète. Pas de formulaire interminable,
+          pas de « nous reviendrons vers vous prochainement ».
+        </p>
+      </div>
+    </header>
+
+    <div class="contact-actions">
+      <a href="mailto:bonjour@infinitif.com">
+        <span class="ic">Email</span>
+        <span class="text">bonjour@infinitif.com</span>
+        <span class="arrow">↗</span>
+      </a>
+      <a href="tel:+33145000000">
+        <span class="ic">Paris</span>
+        <span class="text">+33 1 45 00 00 00</span>
+        <span class="arrow">↗</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════ -->
+<footer class="foot">
+  <div class="foot-grid">
+    <div class="brand">
+      <img src="assets/logo-infinitif-white.svg" alt="Infinitif" />
+      <p>Cabinet de conseil en transformation des organisations. Paris, Bordeaux, Toulouse, Lille.</p>
+    </div>
+    <div>
+      <h5>Pratiques</h5>
+      <ul>
+        <li><a href="#movements">Conseil</a></li>
+        <li><a href="#movements">Delivery IA</a></li>
+        <li><a href="#movements">Shortcuts</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Secteurs</h5>
+      <ul>
+        <li><a href="#sectors">Assurance</a></li>
+        <li><a href="#sectors">Mutuelles</a></li>
+        <li><a href="#sectors">Banque</a></li>
+        <li><a href="#sectors">Santé</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Maison</h5>
+      <ul>
+        <li><a href="#">Carrières</a></li>
+        <li><a href="#">Manifeste</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-base">
+    <span>© 2026 Infinitif &mdash; Artisans contemporains du conseil en management.</span>
+    <span>Mentions légales &middot; RGPD &middot; Politique cookies</span>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════
+     LENIS smooth scroll
+     ═══════════════════════════════════════════════ -->
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+(() => {
+  // ─────────────────────────────────────────────
+  // Smooth scroll
+  // ─────────────────────────────────────────────
+  const lenis = new Lenis({
+    duration: 1.0,
+    easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+  });
+  function raf(t){ lenis.raf(t); requestAnimationFrame(raf); }
+  requestAnimationFrame(raf);
+
+  // ─────────────────────────────────────────────
+  // Parallax — method-figure (and any [data-parallax])
+  // ─────────────────────────────────────────────
+  const parallaxEls = document.querySelectorAll('[data-parallax]');
+  function updateParallax() {
+    const vh = window.innerHeight;
+    parallaxEls.forEach(el => {
+      const track = el.querySelector('.figure-track');
+      if (!track) return;
+      const rect = el.getBoundingClientRect();
+      // progress: 0 when figure bottom hits viewport top, 1 when figure top hits viewport bottom
+      const total = rect.height + vh;
+      const progress = 1 - (rect.bottom) / total; // 0 → entering, 1 → exited above
+      const clamped = Math.max(0, Math.min(1, progress));
+      // Track is 140% height, top:-20%. Move it from -20% (start) to +20% offset (end) = translateY -20% → +20% of (parent.height * 0.4 / 2)
+      // Simpler: translate from 0 to -(track.height - el.height) so the entire image scrolls past.
+      const range = track.offsetHeight - el.offsetHeight;
+      const ty = -clamped * range;
+      track.style.transform = `translate3d(0, ${ty}px, 0)`;
+    });
+  }
+  lenis.on('scroll', updateParallax);
+  window.addEventListener('resize', updateParallax);
+  updateParallax();
+
+  // anchor links → lenis.scrollTo
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (id.length > 1) {
+        const target = document.querySelector(id);
+        if (target) {
+          e.preventDefault();
+          lenis.scrollTo(target, { offset: -20, duration: 1.2 });
+        }
+      }
+    });
+  });
+
+  // ─────────────────────────────────────────────
+  // Reveal on scroll
+  // ─────────────────────────────────────────────
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+  // wrap section heads with reveals automatically
+  document.querySelectorAll('.section-head .title-section').forEach(t => {
+    // wrap each line break into a mask
+    const html = t.innerHTML.split(/<br\s*\/?>/).map((line, i) =>
+      `<span class="reveal-mask delay-${Math.min(i+1,5)}"><span>${line.trim()}</span></span>`
+    ).join('<br>');
+    t.innerHTML = html;
+  });
+  document.querySelectorAll('.reveal-mask').forEach(el => io.observe(el));
+  document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+
+  // Force-reveal hero immediately so it never sits hidden under overflow
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.hero .reveal-mask, .hero .fade-up').forEach(el => el.classList.add('in'));
+  });
+
+  // Hero H1 — arm then trigger reveal
+  const heroH1 = document.querySelector('.hero-h1');
+  if (heroH1) {
+    heroH1.classList.add('armed');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => heroH1.classList.add('ready'));
+    });
+    // safety: ensure visible after 2s no matter what
+    setTimeout(() => heroH1.classList.add('ready'), 2000);
+  }
+
+  // wrap movement headlines and pair words too
+  document.querySelectorAll('.movement .verb-block h3, .pair .yes, .pair .no, .case h4').forEach(el => {
+    const text = el.innerHTML;
+    el.innerHTML = `<span class="reveal-mask"><span>${text}</span></span>`;
+    io.observe(el.firstChild);
+  });
+
+  // ─────────────────────────────────────────────
+  // Side rail — active section
+  // ─────────────────────────────────────────────
+  const railItems = document.querySelectorAll('.rail .item');
+  const navLinks = document.querySelectorAll('.nav .links a');
+  const sections = ['hero','movements','sectors','method','ia','proof','clients','team','offices','rse','contact']
+    .map(id => document.getElementById(id));
+
+  const navObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        railItems.forEach(it => it.classList.toggle('active', it.dataset.section === id));
+        navLinks.forEach(l => l.classList.toggle('active', l.dataset.link === id));
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(s => s && navObserver.observe(s));
+
+  // ─────────────────────────────────────────────
+  // Cursor follower
+  // ─────────────────────────────────────────────
+  const dot = document.getElementById('cursorDot');
+  let mx = 0, my = 0, dx = 0, dy = 0;
+  window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; dot.style.opacity = 1; });
+  function tick() {
+    dx += (mx - dx) * 0.18;
+    dy += (my - dy) * 0.18;
+    dot.style.transform = `translate(${dx}px, ${dy}px) translate(-50%, -50%)`;
+    requestAnimationFrame(tick);
+  }
+  tick();
+  // grow on hoverable
+  ['a','button','.case','.sector','.movement'].forEach(sel => {
+    document.querySelectorAll(sel).forEach(el => {
+      el.addEventListener('mouseenter', () => dot.style.width = dot.style.height = '24px');
+      el.addEventListener('mouseleave', () => dot.style.width = dot.style.height = '6px');
+    });
+  });
+
+  // ─────────────────────────────────────────────
+  // Numbers counter
+  // ─────────────────────────────────────────────
+  const numIo = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      const target = parseFloat(el.dataset.count);
+      const suffix = el.dataset.suffix || '';
+      if (isNaN(target)) return;
+      const duration = 1400;
+      const start = performance.now();
+      const original = el.textContent;
+      const animate = (t) => {
+        const p = Math.min(1, (t - start) / duration);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const val = Math.floor(eased * target);
+        el.textContent = suffix ? (target + (suffix.startsWith('/') || suffix.startsWith(' ') ? suffix : ' ' + suffix)) : (target % 1 === 0 ? val : (eased * target).toFixed(1));
+        if (p < 1) requestAnimationFrame(animate);
+        else el.textContent = original; // restore exact label
+      };
+      requestAnimationFrame(animate);
+      numIo.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.numbers .big').forEach(el => numIo.observe(el));
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════
+     IA NETWORK — signature animation
+     ═══════════════════════════════════════════════ -->
+<script>
+(() => {
+  const svg = document.getElementById('iaSvg');
+  const gNodes = document.getElementById('iaNodes');
+  const gEdges = document.getElementById('iaEdges');
+  const W = 800, H = 680;
+
+  // Node definitions: 3 clusters → conseil (left), delivery (center), shortcuts (right)
+  const NODES = [
+    // Conseil cluster
+    { id: 'c1', label: 'Diagnostic', cluster: 'conseil', size: 6 },
+    { id: 'c2', label: 'Trajectoire', cluster: 'conseil', size: 6 },
+    { id: 'c3', label: 'Conformité', cluster: 'conseil', size: 5 },
+    { id: 'c4', label: 'Pilotage', cluster: 'conseil', size: 7, hub: true },
+
+    // Delivery cluster (center)
+    { id: 'd1', label: 'RAG', cluster: 'delivery', size: 6 },
+    { id: 'd2', label: 'Agents', cluster: 'delivery', size: 8, hub: true },
+    { id: 'd3', label: 'Fine-tune', cluster: 'delivery', size: 5 },
+    { id: 'd4', label: 'LLM Ops', cluster: 'delivery', size: 6 },
+    { id: 'd5', label: 'Observabilité', cluster: 'delivery', size: 5 },
+
+    // Shortcuts cluster (right) — pre-built agents
+    { id: 's1', label: 'Triage sinistres', cluster: 'shortcuts', size: 6 },
+    { id: 's2', label: 'KYC', cluster: 'shortcuts', size: 6 },
+    { id: 's3', label: 'Synthèse réglementaire', cluster: 'shortcuts', size: 7, hub: true },
+    { id: 's4', label: 'Analyse contrats', cluster: 'shortcuts', size: 6 },
+    { id: 's5', label: 'Support adhérent', cluster: 'shortcuts', size: 5 },
+    { id: 's6', label: 'Extraction Kbis', cluster: 'shortcuts', size: 5 },
+  ];
+
+  // Layout positions per mode
+  const LAYOUTS = {
+    all: {
+      // 3-column constellation
+      c1: [120, 180], c2: [180, 320], c3: [120, 460], c4: [220, 240],
+      d1: [340, 140], d2: [400, 340], d3: [350, 540], d4: [470, 220], d5: [470, 460],
+      s1: [600, 130], s2: [580, 250], s3: [680, 340], s4: [580, 430], s5: [600, 550], s6: [690, 220],
+    },
+    conseil: {
+      // Conseil takes the floor; delivery & shortcuts pull back into a faint orbit
+      c1: [200, 200], c2: [400, 200], c3: [200, 480], c4: [400, 480],
+      d1: [550, 140], d2: [620, 240], d3: [620, 440], d4: [560, 540], d5: [600, 340],
+      s1: [710, 140], s2: [750, 250], s3: [770, 340], s4: [750, 430], s5: [710, 540], s6: [770, 220],
+    },
+    delivery: {
+      c1: [80, 200], c2: [60, 340], c3: [80, 480], c4: [50, 100],
+      d1: [320, 200], d2: [400, 340], d3: [320, 480], d4: [500, 200], d5: [500, 480],
+      s1: [710, 140], s2: [750, 250], s3: [770, 340], s4: [750, 430], s5: [710, 540], s6: [770, 220],
+    },
+    shortcuts: {
+      c1: [50, 100], c2: [50, 240], c3: [50, 440], c4: [50, 580],
+      d1: [200, 140], d2: [220, 340], d3: [200, 540], d4: [180, 240], d5: [180, 440],
+      s1: [420, 140], s2: [560, 200], s3: [500, 340], s4: [560, 480], s5: [420, 540], s6: [680, 340],
+    }
+  };
+
+  // Edges (connections between nodes)
+  const EDGES = [
+    // Conseil internal
+    ['c1','c4'],['c2','c4'],['c3','c4'],
+    // Conseil → Delivery
+    ['c4','d2'],['c4','d4'],['c2','d1'],
+    // Delivery internal
+    ['d1','d2'],['d2','d3'],['d2','d4'],['d2','d5'],['d4','d5'],
+    // Delivery → Shortcuts
+    ['d2','s3'],['d2','s1'],['d2','s4'],
+    // Shortcuts internal
+    ['s1','s3'],['s2','s3'],['s4','s3'],['s5','s3'],['s6','s2'],
+    // Cross
+    ['c3','s2'],['d1','s4'],
+  ];
+
+  const NS = 'http://www.w3.org/2000/svg';
+  const nodeMap = {};
+
+  // Build DOM
+  EDGES.forEach(([a,b], i) => {
+    const line = document.createElementNS(NS, 'line');
+    line.setAttribute('class', 'ia-edge');
+    line.setAttribute('data-from', a);
+    line.setAttribute('data-to', b);
+    line.setAttribute('stroke', '#fff');
+    line.setAttribute('stroke-opacity', '0.18');
+    line.setAttribute('stroke-width', '0.8');
+    line.style.transition = 'stroke 600ms var(--ease-out), stroke-opacity 600ms var(--ease-out)';
+    gEdges.appendChild(line);
+  });
+
+  NODES.forEach(n => {
+    const g = document.createElementNS(NS, 'g');
+    g.setAttribute('class', `ia-node cluster-${n.cluster}`);
+    g.setAttribute('data-id', n.id);
+    g.style.transition = 'transform 1100ms var(--ease-out), opacity 600ms var(--ease-out)';
+    g.style.transformBox = 'fill-box';
+
+    // soft halo
+    const halo = document.createElementNS(NS, 'circle');
+    halo.setAttribute('r', n.size * 4);
+    halo.setAttribute('fill', 'url(#nodeGlow)');
+    halo.setAttribute('opacity', n.hub ? '1' : '0.6');
+    g.appendChild(halo);
+
+    // ring
+    const ring = document.createElementNS(NS, 'circle');
+    ring.setAttribute('r', n.size + 3);
+    ring.setAttribute('fill', 'none');
+    ring.setAttribute('stroke', '#F6530A');
+    ring.setAttribute('stroke-width', '0.8');
+    ring.setAttribute('opacity', '0.35');
+    g.appendChild(ring);
+
+    // dot
+    const dot = document.createElementNS(NS, 'circle');
+    dot.setAttribute('r', n.size);
+    dot.setAttribute('fill', n.hub ? '#F6530A' : '#fff');
+    dot.setAttribute('opacity', n.hub ? '1' : '0.85');
+    g.appendChild(dot);
+
+    // label
+    const label = document.createElementNS(NS, 'text');
+    label.textContent = n.label;
+    label.setAttribute('x', n.size + 12);
+    label.setAttribute('y', 4);
+    label.setAttribute('fill', n.hub ? '#F6530A' : 'rgba(255,255,255,0.85)');
+    label.setAttribute('font-family', 'Fira Sans, sans-serif');
+    label.setAttribute('font-size', n.hub ? '12' : '10.5');
+    label.setAttribute('font-weight', n.hub ? '600' : '500');
+    label.setAttribute('letter-spacing', '0.04em');
+    g.appendChild(label);
+
+    gNodes.appendChild(g);
+    nodeMap[n.id] = { el: g, label, dot, ring, halo, def: n, x: 0, y: 0 };
+  });
+
+  // Update positions
+  function applyLayout(name) {
+    const layout = LAYOUTS[name];
+    Object.entries(layout).forEach(([id, [x,y]]) => {
+      const n = nodeMap[id];
+      n.x = x; n.y = y;
+      n.el.setAttribute('transform', `translate(${x} ${y})`);
+    });
+    // edges
+    gEdges.querySelectorAll('line').forEach(line => {
+      const a = nodeMap[line.dataset.from];
+      const b = nodeMap[line.dataset.to];
+      if (!a || !b) return;
+      line.setAttribute('x1', a.x);
+      line.setAttribute('y1', a.y);
+      line.setAttribute('x2', b.x);
+      line.setAttribute('y2', b.y);
+    });
+  }
+
+  // Cluster filtering visuals
+  function applyMode(mode) {
+    Object.values(nodeMap).forEach(n => {
+      const focused = (mode === 'all') || (n.def.cluster === mode);
+      n.el.style.opacity = focused ? 1 : 0.22;
+      n.dot.setAttribute('fill', focused
+        ? (n.def.hub ? '#F6530A' : '#fff')
+        : '#888');
+      n.ring.setAttribute('opacity', focused ? 0.4 : 0.1);
+      n.label.setAttribute('opacity', focused ? 1 : 0.45);
+    });
+    gEdges.querySelectorAll('line').forEach(line => {
+      const a = nodeMap[line.dataset.from], b = nodeMap[line.dataset.to];
+      const onCluster = mode === 'all'
+        || (a.def.cluster === mode || b.def.cluster === mode);
+      line.setAttribute('stroke-opacity', onCluster ? 0.3 : 0.06);
+      line.setAttribute('stroke', onCluster ? '#F6530A' : '#fff');
+    });
+  }
+
+  // Animated traveling pulse along edges
+  function setupPulse() {
+    const pulse = document.createElementNS(NS, 'circle');
+    pulse.setAttribute('r', 3);
+    pulse.setAttribute('fill', '#F6530A');
+    pulse.setAttribute('opacity', '0.95');
+    pulse.setAttribute('filter', 'url(#softGlow)');
+    svg.appendChild(pulse);
+
+    const path = ['c1','c4','d2','d5','s3','s4','s3','d2','d4','c4','c2','d1','s4'];
+    let i = 0;
+    function travel() {
+      const a = nodeMap[path[i]];
+      const b = nodeMap[path[(i+1) % path.length]];
+      if (!a || !b) { i = 0; setTimeout(travel, 100); return; }
+      const dur = 1200;
+      const start = performance.now();
+      function frame(t) {
+        const p = Math.min(1, (t - start) / dur);
+        const eased = p < 0.5 ? 2*p*p : 1 - Math.pow(-2*p+2,2)/2;
+        const x = a.x + (b.x - a.x) * eased;
+        const y = a.y + (b.y - a.y) * eased;
+        pulse.setAttribute('cx', x);
+        pulse.setAttribute('cy', y);
+        if (p < 1) requestAnimationFrame(frame);
+        else { i = (i + 1) % path.length; setTimeout(travel, 80); }
+      }
+      requestAnimationFrame(frame);
+    }
+    travel();
+  }
+
+  // Init
+  applyLayout('all');
+  applyMode('all');
+  setupPulse();
+
+  // Wire controls
+  document.querySelectorAll('#iaControls button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#iaControls button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const mode = btn.dataset.mode;
+      applyLayout(mode);
+      applyMode(mode);
+    });
+  });
+
+  // Auto-cycle on first reveal
+  const ioStage = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      let modeIdx = 0;
+      const modes = ['all','conseil','delivery','shortcuts','all'];
+      const cycle = () => {
+        if (modeIdx >= modes.length) return;
+        const btn = document.querySelector(`#iaControls button[data-mode="${modes[modeIdx]}"]`);
+        if (btn) btn.click();
+        modeIdx++;
+        if (modeIdx < modes.length) setTimeout(cycle, 2600);
+      };
+      setTimeout(cycle, 1200);
+      ioStage.unobserve(e.target);
+    });
+  }, { threshold: 0.4 });
+  ioStage.observe(document.getElementById('iaNet'));
+})();
+</script>
+
+</body>
+</html>
