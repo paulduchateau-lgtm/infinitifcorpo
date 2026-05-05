@@ -96,12 +96,12 @@
     text-transform: uppercase;
     padding: 12px 22px;
     border-radius: var(--r-pill);
-    background: var(--inf-orange);
+    background: #09ACF5;
     color: #fff;
     mix-blend-mode: difference;
     transition: background 200ms var(--ease-out), transform 200ms var(--ease-out);
   }
-  .nav-cta:hover { background: var(--inf-orange-deep); }
+  .nav-cta:hover { background: #11B8FC; }
   @media (max-width: 1180px) {
     .nav { padding-right: calc(var(--pad-x) + 130px); }
     .nav .links { gap: 18px; font-size: 11px; }
@@ -259,11 +259,30 @@
   .orange-bar.in { transform: scaleX(1); }
 
   /* ─────────────────────────────────────────────────────────────────
+     PAGE BANNER — full-bleed image header
+     ───────────────────────────────────────────────────────────────── */
+  .page-banner {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    line-height: 0;
+    background: var(--inf-black);
+    overflow: hidden;
+  }
+  .page-banner img {
+    display: block;
+    width: 100%;
+    height: clamp(280px, 48vw, 720px);
+    object-fit: cover;
+    object-position: center 38%;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
      HERO
      ───────────────────────────────────────────────────────────────── */
   .hero {
-    min-height: 100vh;
-    padding-top: 140px;
+    min-height: auto;
+    padding-top: clamp(64px, 7vw, 120px);
     padding-bottom: 80px;
     display: grid;
     grid-template-rows: auto 1fr auto;
@@ -1705,6 +1724,13 @@
   <a href="#rse" class="item" data-section="rse"><span class="num">10</span><span class="bar"></span><span class="label">RSE</span></a>
   <a href="#contact" class="item" data-section="contact"><span class="num">11</span><span class="bar"></span><span class="label">Contact</span></a>
 </aside>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE BANNER — full-width editorial header
+     ═══════════════════════════════════════════════ -->
+<header class="page-banner" aria-hidden="true">
+  <img src="img/header-team.png" alt="" />
+</header>
 
 <!-- ═══════════════════════════════════════════════
      01 — HERO
