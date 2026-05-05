@@ -115,8 +115,102 @@
     .nav { padding-right: calc(var(--pad-x) + 130px); }
     .nav .links { gap: 18px; font-size: 11px; }
   }
+
+  /* Burger toggle (mobile) */
+  .nav-burger {
+    position: fixed;
+    top: 0;
+    right: var(--pad-x);
+    z-index: 60;
+    height: 76px;
+    width: 44px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+  .nav-burger span {
+    display: block;
+    width: 26px; height: 2px;
+    background: var(--inf-black);
+    position: relative;
+    transition: transform 280ms var(--ease-out), opacity 200ms var(--ease-out), background 200ms var(--ease-out);
+  }
+  .nav-burger span::before,
+  .nav-burger span::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    height: 2px;
+    background: currentColor;
+    transition: transform 280ms var(--ease-out), top 280ms var(--ease-out), bottom 280ms var(--ease-out);
+  }
+  .nav-burger span::before { top: -8px; background: var(--inf-black); }
+  .nav-burger span::after  { bottom: -8px; background: var(--inf-black); }
+  body[data-nav-bg="dark"] .nav-burger span,
+  body[data-nav-bg="dark"] .nav-burger span::before,
+  body[data-nav-bg="dark"] .nav-burger span::after { background: #fff; }
+  body.nav-open .nav-burger span { background: transparent; }
+  body.nav-open .nav-burger span::before { top: 0; transform: rotate(45deg); }
+  body.nav-open .nav-burger span::after  { bottom: 0; transform: rotate(-45deg); }
+
+  /* Mobile menu overlay */
+  .nav-mobile {
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    background: var(--inf-black);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 96px var(--pad-x) 48px;
+    gap: 28px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-12px);
+    transition: opacity 320ms var(--ease-out), transform 320ms var(--ease-out);
+  }
+  body.nav-open .nav-mobile {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+  body.nav-open { overflow: hidden; }
+  .nav-mobile a {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 6vw, 44px);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: rgba(255,255,255,0.85);
+    transition: color 200ms var(--ease-out);
+  }
+  .nav-mobile a:hover,
+  .nav-mobile a:focus-visible { color: var(--inf-orange); }
+  .nav-mobile .nav-mobile-cta {
+    margin-top: 24px;
+    font-family: var(--font-accent);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: var(--ls-widest);
+    text-transform: uppercase;
+    padding: 14px 26px;
+    border-radius: var(--r-pill);
+    background: var(--inf-orange);
+    color: #fff;
+  }
+
   @media (max-width: 860px) {
     .nav .links { display: none; }
+    .nav-cta-wrap { display: none; }
+    .nav-burger { display: flex; }
+  }
+  @media (min-width: 861px) {
+    .nav-mobile { display: none; }
   }
 
   /* Side rail — section index, fixed left */
@@ -906,9 +1000,10 @@
 
   /* Method figure — tall full-bleed scroll-reveal photo (parallax) */
   .method-figure {
-    margin: 96px calc(50% - 50vw) 0;
+    margin: 96px 0 0;
     padding: 0;
     position: relative;
+    width: 100%;
     height: clamp(520px, 80vh, 760px);
     overflow: hidden;
   }
@@ -1719,6 +1814,20 @@
 </nav>
 <div class="nav-cta-wrap"><a href="#contact" class="nav-cta">Parlons-en</a></div>
 
+<button class="nav-burger" id="navBurger" aria-label="Ouvrir le menu" aria-expanded="false"><span></span></button>
+
+<nav class="nav-mobile" id="navMobile" aria-hidden="true">
+  <a href="#movements">Ce qu'on fait</a>
+  <a href="#sectors">Pour qui</a>
+  <a href="#method">Méthode</a>
+  <a href="#ia">IA</a>
+  <a href="#proof">Preuves</a>
+  <a href="#clients">Clients</a>
+  <a href="#team">Équipe</a>
+  <a href="#offices">Bureaux</a>
+  <a href="#contact" class="nav-mobile-cta">Parlons-en</a>
+</nav>
+
 <!-- ───────────────── Side rail ───────────────── -->
 <aside class="rail" id="rail" aria-hidden="true">
   <a href="#hero" class="item active" data-section="hero"><span class="num">01</span><span class="bar"></span><span class="label">Manifeste</span></a>
@@ -2021,16 +2130,17 @@
       </div>
     </div>
 
-    <figure class="method-figure" data-parallax>
-      <div class="figure-track">
-        <img src="img/method-pitch.png" alt="Présentation Infinitif — méthode en 4 étapes" loading="lazy" />
-      </div>
-      <figcaption>
-        <span class="cap-eyebrow">En mission · Atelier de cadrage</span>
-        <span class="cap-line">Strategy · Design · Operate · Sustain — la séquence qu'on tient.</span>
-      </figcaption>
-    </figure>
   </div>
+
+  <figure class="method-figure" data-parallax>
+    <div class="figure-track">
+      <img src="img/method-pitch.png" alt="Présentation Infinitif — méthode en 4 étapes" loading="lazy" />
+    </div>
+    <figcaption>
+      <span class="cap-eyebrow">En mission · Atelier de cadrage</span>
+      <span class="cap-line">Strategy · Design · Operate · Sustain — la séquence qu'on tient.</span>
+    </figcaption>
+  </figure>
 </section>
 
 <!-- ═══════════════════════════════════════════════
@@ -2599,9 +2709,35 @@
         if (target) {
           e.preventDefault();
           lenis.scrollTo(target, { offset: -20, duration: 1.2 });
+          if (document.body.classList.contains('nav-open')) closeMobileNav();
         }
       }
     });
+  });
+
+  // Burger menu (mobile)
+  const burger = document.getElementById('navBurger');
+  const mobileNav = document.getElementById('navMobile');
+  function openMobileNav() {
+    document.body.classList.add('nav-open');
+    burger.setAttribute('aria-expanded', 'true');
+    mobileNav.setAttribute('aria-hidden', 'false');
+    if (lenis && lenis.stop) lenis.stop();
+  }
+  function closeMobileNav() {
+    document.body.classList.remove('nav-open');
+    burger.setAttribute('aria-expanded', 'false');
+    mobileNav.setAttribute('aria-hidden', 'true');
+    if (lenis && lenis.start) lenis.start();
+  }
+  if (burger) {
+    burger.addEventListener('click', () => {
+      if (document.body.classList.contains('nav-open')) closeMobileNav();
+      else openMobileNav();
+    });
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.body.classList.contains('nav-open')) closeMobileNav();
   });
 
   // ─────────────────────────────────────────────
