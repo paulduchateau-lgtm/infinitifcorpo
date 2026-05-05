@@ -97,9 +97,11 @@
     border-radius: var(--r-pill);
     background: var(--inf-orange);
     color: #fff;
-    transition: background 200ms var(--ease-out), transform 200ms var(--ease-out);
+    transition: background 200ms var(--ease-out), color 200ms var(--ease-out), transform 200ms var(--ease-out);
   }
   .nav-cta:hover { background: var(--inf-orange-deep); }
+  body[data-nav-bg="dark"] .nav-cta { background: #fff; color: var(--inf-black); }
+  body[data-nav-bg="dark"] .nav-cta:hover { background: var(--inf-orange); color: #fff; }
   @media (max-width: 860px) {
     .nav .links { display: none; }
   }
@@ -2174,7 +2176,7 @@
 <!-- ═══════════════════════════════════════════════
      07 — CLIENTS (carrousel haute couture)
      ═══════════════════════════════════════════════ -->
-<section class="clients" id="clients" data-screen-label="07 Clients">
+<section class="clients" id="clients" data-screen-label="07 Clients" data-bg="dark">
   <div class="container">
     <header class="section-head">
       <div class="index" style="color:rgba(255,255,255,0.55);">07 / 11</div>
@@ -2614,6 +2616,17 @@
     });
   }, { threshold: 0.4 });
   sections.forEach(s => s && navObserver.observe(s));
+
+  // Detect dark sections crossing under the nav so the CTA can flip to negative
+  const navBgObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const bg = entry.target.dataset.bg || 'light';
+        document.body.dataset.navBg = bg;
+      }
+    });
+  }, { rootMargin: '-60px 0px -90% 0px', threshold: 0 });
+  sections.forEach(s => s && navBgObserver.observe(s));
 
   // ─────────────────────────────────────────────
   // Cursor follower
