@@ -96,12 +96,11 @@
     text-transform: uppercase;
     padding: 12px 22px;
     border-radius: var(--r-pill);
-    background: #09ACF5;
+    background: var(--inf-orange);
     color: #fff;
-    mix-blend-mode: difference;
     transition: background 200ms var(--ease-out), transform 200ms var(--ease-out);
   }
-  .nav-cta:hover { background: #11B8FC; }
+  .nav-cta:hover { background: var(--inf-orange-deep); }
   @media (max-width: 1180px) {
     .nav { padding-right: calc(var(--pad-x) + 130px); }
     .nav .links { gap: 18px; font-size: 11px; }
@@ -125,22 +124,22 @@
     font-weight: 500;
     letter-spacing: var(--ls-widest);
     text-transform: uppercase;
-    color: var(--fg-3);
-    mix-blend-mode: difference;
   }
   .rail .item {
     display: flex; align-items: center; gap: 12px;
-    color: rgba(255,255,255,0.55);
+    color: rgba(0,0,0,0.55);
     transition: color 300ms var(--ease-out);
     cursor: pointer;
   }
+  body[data-nav-bg="dark"] .rail .item { color: rgba(255,255,255,0.6); }
   .rail .item .num { width: 22px; text-align: right; tabular-nums: true; font-variant-numeric: tabular-nums; }
   .rail .item .bar {
     width: 18px; height: 1px; background: currentColor;
     transition: width 400ms var(--ease-out), background 300ms var(--ease-out);
   }
   .rail .item .label { opacity: 0; transform: translateX(-4px); transition: opacity 300ms var(--ease-out), transform 300ms var(--ease-out); }
-  .rail .item.active { color: #09ACF5; }
+  .rail .item.active { color: var(--inf-orange); }
+  body[data-nav-bg="dark"] .rail .item.active { color: var(--inf-orange); }
   .rail .item.active .bar { width: 36px; }
   .rail .item.active .label { opacity: 1; transform: translateX(0); }
   .rail .item:hover .label { opacity: 1; transform: translateX(0); }
@@ -272,7 +271,7 @@
   .page-banner img {
     display: block;
     width: 100%;
-    height: clamp(280px, 48vw, 720px);
+    height: 100vh;
     object-fit: cover;
     object-position: center 38%;
   }
@@ -1768,10 +1767,6 @@
     </div>
   </div>
 
-  <!-- Hero signature — single editorial photo -->
-  <div class="hero-mosaic" aria-hidden="true">
-    <div class="tile t1"><img src="img/hero-laptop.png" alt="" loading="eager" /></div>
-  </div>
 </section>
 
 <!-- ═══════════════════════════════════════════════
@@ -2221,7 +2216,7 @@
 <!-- ═══════════════════════════════════════════════
      07 — CLIENTS (carrousel haute couture)
      ═══════════════════════════════════════════════ -->
-<section class="clients" id="clients" data-screen-label="07 Clients">
+<section class="clients" id="clients" data-screen-label="07 Clients" data-bg="dark">
   <div class="container">
     <header class="section-head">
       <div class="index" style="color:rgba(255,255,255,0.55);">07 / 11</div>
@@ -2663,6 +2658,17 @@
     });
   }, { threshold: 0.4 });
   sections.forEach(s => s && navObserver.observe(s));
+
+  // Detect dark sections crossing under the rail (left edge of viewport)
+  const navBgObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const bg = entry.target.dataset.bg || 'light';
+        document.body.dataset.navBg = bg;
+      }
+    });
+  }, { rootMargin: '-40% 0px -40% 0px', threshold: 0 });
+  sections.forEach(s => s && navBgObserver.observe(s));
 
   // ─────────────────────────────────────────────
   // Cursor follower
