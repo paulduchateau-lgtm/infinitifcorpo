@@ -57,7 +57,8 @@
     position: fixed;
     top: 0; left: 0; right: 0;
     z-index: 50;
-    padding: 22px var(--pad-x);
+    height: 76px;
+    padding: 0 var(--pad-x);
     padding-right: calc(var(--pad-x) + 140px);
     display: flex;
     align-items: center;
@@ -88,11 +89,16 @@
   .nav .links a:hover::after { transform: scaleX(1); transform-origin: left; }
   .nav .links a.active::after { transform: scaleX(1); }
   .nav .links a { white-space: nowrap; }
-  .nav-cta {
+  .nav-cta-wrap {
     position: fixed;
-    top: 22px;
+    top: 0;
     right: var(--pad-x);
     z-index: 51;
+    height: 76px;
+    display: flex;
+    align-items: center;
+  }
+  .nav-cta {
     font-family: var(--font-accent);
     font-size: 12px;
     font-weight: 600;
@@ -1711,7 +1717,7 @@
     <a href="#offices" data-link="offices">Bureaux</a>
   </div>
 </nav>
-<a href="#contact" class="nav-cta">Parlons-en</a>
+<div class="nav-cta-wrap"><a href="#contact" class="nav-cta">Parlons-en</a></div>
 
 <!-- ───────────────── Side rail ───────────────── -->
 <aside class="rail" id="rail" aria-hidden="true">
@@ -2652,6 +2658,9 @@
   const sections = ['hero','movements','sectors','method','ia','proof','clients','team','offices','rse','contact']
     .map(id => document.getElementById(id));
 
+  // Activate the rail/nav item whose section currently spans a virtual
+  // line at ~35% of the viewport height. Using rootMargin instead of
+  // a threshold so very tall sections (>2× viewport height) still fire.
   const navObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -2660,7 +2669,7 @@
         navLinks.forEach(l => l.classList.toggle('active', l.dataset.link === id));
       }
     });
-  }, { threshold: 0.4 });
+  }, { rootMargin: '-35% 0px -64% 0px', threshold: 0 });
   sections.forEach(s => s && navObserver.observe(s));
 
   // Detect dark sections crossing under the rail (left edge of viewport)
