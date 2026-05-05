@@ -259,43 +259,47 @@
   .orange-bar.in { transform: scaleX(1); }
 
   /* ─────────────────────────────────────────────────────────────────
-     PAGE BANNER — full-bleed image header
-     ───────────────────────────────────────────────────────────────── */
-  .page-banner {
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    line-height: 0;
-    background: var(--inf-black);
-    overflow: hidden;
-  }
-  .page-banner img {
-    display: block;
-    width: 100%;
-    height: clamp(280px, 48vw, 720px);
-    object-fit: cover;
-    object-position: center 38%;
-  }
-
-  /* ─────────────────────────────────────────────────────────────────
-     HERO
+     HERO — full-bleed image with overlaid title
      ───────────────────────────────────────────────────────────────── */
   .hero {
-    min-height: auto;
-    padding-top: clamp(64px, 7vw, 120px);
+    min-height: 100vh;
+    padding-top: 140px;
     padding-bottom: 80px;
     display: grid;
     grid-template-rows: auto 1fr auto;
     position: relative;
     overflow: hidden;
+    background: var(--inf-black);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('img/header-team.png');
+    background-size: cover;
+    background-position: center 38%;
+    background-repeat: no-repeat;
+    z-index: 0;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.25) 35%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.6) 100%);
+    z-index: 1;
+    pointer-events: none;
   }
   @media (max-width: 1180px) {
     .hero {
-      min-height: auto;
+      min-height: 92vh;
       padding-top: 120px;
       padding-bottom: 64px;
       display: block;
     }
+  }
+  @media (max-width: 760px) {
+    .hero { min-height: 80vh; padding-top: 100px; }
+    .hero::before { background-position: 70% 38%; }
   }
   .hero .container {
     position: relative;
@@ -1726,13 +1730,6 @@
 </aside>
 
 <!-- ═══════════════════════════════════════════════
-     PAGE BANNER — full-width editorial header
-     ═══════════════════════════════════════════════ -->
-<header class="page-banner" aria-hidden="true">
-  <img src="img/header-team.png" alt="" />
-</header>
-
-<!-- ═══════════════════════════════════════════════
      01 — HERO
      ═══════════════════════════════════════════════ -->
 <section class="hero" id="hero" data-screen-label="01 Hero">
@@ -1768,10 +1765,6 @@
     </div>
   </div>
 
-  <!-- Hero signature — single editorial photo -->
-  <div class="hero-mosaic" aria-hidden="true">
-    <div class="tile t1"><img src="img/hero-laptop.png" alt="" loading="eager" /></div>
-  </div>
 </section>
 
 <!-- ═══════════════════════════════════════════════
