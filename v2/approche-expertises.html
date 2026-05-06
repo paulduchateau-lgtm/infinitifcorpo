@@ -126,6 +126,16 @@
     </div>
   </section>
 
+  <figure class="v2-figure" data-parallax>
+    <div class="figure-track">
+      <img src="../img/method-pitch.png" alt="Présentation Infinitif — méthode en plusieurs étapes" loading="lazy" />
+    </div>
+    <figcaption>
+      <span class="cap-eyebrow">En mission · Atelier de cadrage</span>
+      <span class="cap-line">Strategy · Design · Operate · Sustain — la séquence qu'on tient.</span>
+    </figcaption>
+  </figure>
+
   <!-- Notre posture -->
   <section class="v2-section">
     <div class="shell">
@@ -228,6 +238,85 @@
     </div>
   </section>
 
+  <!-- Section IA — signature -->
+  <section class="v2-section v2-ia" id="ia">
+    <div class="shell">
+      <div class="v2-section-head">
+        <div class="v2-section-index">F · Puissance IA</div>
+        <div>
+          <h2 class="v2-section-title">
+            Une bibliothèque d'<span class="accent">agents</span>, branchée sur votre infrastructure réelle.
+          </h2>
+          <p class="v2-section-lede">
+            La plupart des cabinets <strong>conseillent sans livrer</strong>. Quelques-uns
+            <strong>livrent sans conseiller</strong>. Nous faisons les deux, dans la même équipe,
+            sous le même toit. Voici la stack.
+          </p>
+        </div>
+      </div>
+
+      <div class="ia-controls" id="iaControls">
+        <button class="active" data-mode="all">Tout afficher</button>
+        <button data-mode="conseil">Conseil</button>
+        <button data-mode="delivery">Delivery</button>
+        <button data-mode="shortcuts">Shortcuts</button>
+      </div>
+
+      <div class="ia-stage">
+        <div class="col left">
+          <div>
+            <h4>Conseil</h4>
+            <span class="bullet">Diagnostic, cible, trajectoire.</span>
+            <p>Cartographie, schéma directeur, business case, conduite du changement.</p>
+          </div>
+          <div>
+            <h4>Sécurité</h4>
+            <span class="bullet">Souverain. Auditable.</span>
+            <p>Hébergement HDS, traçabilité AI&nbsp;Act, revues conformité ACPR.</p>
+          </div>
+        </div>
+
+        <div class="ia-net" id="iaNet">
+          <svg id="iaSvg" viewBox="0 0 800 680" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <defs>
+              <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#F6530A" stop-opacity="0.45" />
+                <stop offset="60%" stop-color="#F6530A" stop-opacity="0.08" />
+                <stop offset="100%" stop-color="#F6530A" stop-opacity="0" />
+              </radialGradient>
+              <filter id="softGlow">
+                <feGaussianBlur stdDeviation="3" />
+              </filter>
+            </defs>
+            <g opacity="0.06" stroke="#fff" stroke-width="0.5">
+              <line x1="0" y1="170" x2="800" y2="170"/>
+              <line x1="0" y1="340" x2="800" y2="340"/>
+              <line x1="0" y1="510" x2="800" y2="510"/>
+              <line x1="200" y1="0" x2="200" y2="680"/>
+              <line x1="400" y1="0" x2="400" y2="680"/>
+              <line x1="600" y1="0" x2="600" y2="680"/>
+            </g>
+            <g id="iaEdges"></g>
+            <g id="iaNodes"></g>
+          </svg>
+        </div>
+
+        <div class="col right">
+          <div>
+            <h4>Delivery custom</h4>
+            <span class="bullet">RAG. Agents. Fine-tune.</span>
+            <p>Python, LLM ops, observabilité. Mise en production sous 8 à 16 semaines.</p>
+          </div>
+          <div>
+            <h4>Shortcuts</h4>
+            <span class="bullet">12 agents pré-implémentés.</span>
+            <p>Triage sinistres, synthèse réglementaire, KYC, analyse contrats, support adhérent.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Racines & champs d'action -->
   <section class="v2-section">
     <div class="shell">
@@ -320,19 +409,250 @@
 (() => {
   const burger = document.getElementById('v2Burger');
   const mobile = document.getElementById('v2Mobile');
-  if (!burger) return;
-  burger.addEventListener('click', () => {
-    const open = document.body.classList.toggle('v2-nav-open');
-    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
-    mobile.setAttribute('aria-hidden', open ? 'false' : 'true');
-  });
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && document.body.classList.contains('v2-nav-open')) {
-      document.body.classList.remove('v2-nav-open');
-      burger.setAttribute('aria-expanded', 'false');
-      mobile.setAttribute('aria-hidden', 'true');
+  if (burger) {
+    burger.addEventListener('click', () => {
+      const open = document.body.classList.toggle('v2-nav-open');
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      mobile.setAttribute('aria-hidden', open ? 'false' : 'true');
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && document.body.classList.contains('v2-nav-open')) {
+        document.body.classList.remove('v2-nav-open');
+        burger.setAttribute('aria-expanded', 'false');
+        mobile.setAttribute('aria-hidden', 'true');
+      }
+    });
+  }
+
+  // Parallax — method-figure
+  const parallaxEls = document.querySelectorAll('[data-parallax]');
+  function updateParallax() {
+    const vh = window.innerHeight;
+    parallaxEls.forEach(el => {
+      const track = el.querySelector('.figure-track');
+      if (!track) return;
+      const rect = el.getBoundingClientRect();
+      const total = rect.height + vh;
+      const progress = 1 - rect.bottom / total;
+      const clamped = Math.max(0, Math.min(1, progress));
+      const range = track.offsetHeight - el.offsetHeight;
+      const ty = -clamped * range;
+      track.style.transform = `translate3d(0, ${ty}px, 0)`;
+    });
+  }
+  if (parallaxEls.length) {
+    window.addEventListener('scroll', updateParallax, { passive: true });
+    window.addEventListener('resize', updateParallax);
+    updateParallax();
+  }
+})();
+</script>
+
+<!-- IA NETWORK — signature animation -->
+<script>
+(() => {
+  const svg = document.getElementById('iaSvg');
+  const gNodes = document.getElementById('iaNodes');
+  const gEdges = document.getElementById('iaEdges');
+  if (!svg || !gNodes || !gEdges) return;
+
+  const NODES = [
+    { id: 'c1', label: 'Diagnostic', cluster: 'conseil', size: 6 },
+    { id: 'c2', label: 'Trajectoire', cluster: 'conseil', size: 6 },
+    { id: 'c3', label: 'Conformité', cluster: 'conseil', size: 5 },
+    { id: 'c4', label: 'Pilotage', cluster: 'conseil', size: 7, hub: true },
+    { id: 'd1', label: 'RAG', cluster: 'delivery', size: 6 },
+    { id: 'd2', label: 'Agents', cluster: 'delivery', size: 8, hub: true },
+    { id: 'd3', label: 'Fine-tune', cluster: 'delivery', size: 5 },
+    { id: 'd4', label: 'LLM Ops', cluster: 'delivery', size: 6 },
+    { id: 'd5', label: 'Observabilité', cluster: 'delivery', size: 5 },
+    { id: 's1', label: 'Triage sinistres', cluster: 'shortcuts', size: 6 },
+    { id: 's2', label: 'KYC', cluster: 'shortcuts', size: 6 },
+    { id: 's3', label: 'Synthèse réglementaire', cluster: 'shortcuts', size: 7, hub: true },
+    { id: 's4', label: 'Analyse contrats', cluster: 'shortcuts', size: 6 },
+    { id: 's5', label: 'Support adhérent', cluster: 'shortcuts', size: 5 },
+    { id: 's6', label: 'Extraction Kbis', cluster: 'shortcuts', size: 5 },
+  ];
+
+  const LAYOUTS = {
+    all: {
+      c1: [120, 180], c2: [180, 320], c3: [120, 460], c4: [220, 240],
+      d1: [340, 140], d2: [400, 340], d3: [350, 540], d4: [470, 220], d5: [470, 460],
+      s1: [600, 130], s2: [580, 250], s3: [680, 340], s4: [580, 430], s5: [600, 550], s6: [690, 220],
+    },
+    conseil: {
+      c1: [200, 200], c2: [400, 200], c3: [200, 480], c4: [400, 480],
+      d1: [550, 140], d2: [620, 240], d3: [620, 440], d4: [560, 540], d5: [600, 340],
+      s1: [710, 140], s2: [750, 250], s3: [770, 340], s4: [750, 430], s5: [710, 540], s6: [770, 220],
+    },
+    delivery: {
+      c1: [80, 200], c2: [60, 340], c3: [80, 480], c4: [50, 100],
+      d1: [320, 200], d2: [400, 340], d3: [320, 480], d4: [500, 200], d5: [500, 480],
+      s1: [710, 140], s2: [750, 250], s3: [770, 340], s4: [750, 430], s5: [710, 540], s6: [770, 220],
+    },
+    shortcuts: {
+      c1: [50, 100], c2: [50, 240], c3: [50, 440], c4: [50, 580],
+      d1: [200, 140], d2: [220, 340], d3: [200, 540], d4: [180, 240], d5: [180, 440],
+      s1: [420, 140], s2: [560, 200], s3: [500, 340], s4: [560, 480], s5: [420, 540], s6: [680, 340],
     }
+  };
+
+  const EDGES = [
+    ['c1','c4'],['c2','c4'],['c3','c4'],
+    ['c4','d2'],['c4','d4'],['c2','d1'],
+    ['d1','d2'],['d2','d3'],['d2','d4'],['d2','d5'],['d4','d5'],
+    ['d2','s3'],['d2','s1'],['d2','s4'],
+    ['s1','s3'],['s2','s3'],['s4','s3'],['s5','s3'],['s6','s2'],
+    ['c3','s2'],['d1','s4'],
+  ];
+
+  const NS = 'http://www.w3.org/2000/svg';
+  const nodeMap = {};
+
+  EDGES.forEach(([a,b]) => {
+    const line = document.createElementNS(NS, 'line');
+    line.setAttribute('class', 'ia-edge');
+    line.setAttribute('data-from', a);
+    line.setAttribute('data-to', b);
+    line.setAttribute('stroke', '#fff');
+    line.setAttribute('stroke-opacity', '0.18');
+    line.setAttribute('stroke-width', '0.8');
+    line.style.transition = 'stroke 600ms ease, stroke-opacity 600ms ease';
+    gEdges.appendChild(line);
   });
+
+  NODES.forEach(n => {
+    const g = document.createElementNS(NS, 'g');
+    g.setAttribute('class', `ia-node cluster-${n.cluster}`);
+    g.setAttribute('data-id', n.id);
+    g.style.transition = 'transform 1100ms cubic-bezier(0.16,1,0.3,1), opacity 600ms ease';
+    g.style.transformBox = 'fill-box';
+    const halo = document.createElementNS(NS, 'circle');
+    halo.setAttribute('r', n.size * 4);
+    halo.setAttribute('fill', 'url(#nodeGlow)');
+    halo.setAttribute('opacity', n.hub ? '1' : '0.6');
+    g.appendChild(halo);
+    const ring = document.createElementNS(NS, 'circle');
+    ring.setAttribute('r', n.size + 3);
+    ring.setAttribute('fill', 'none');
+    ring.setAttribute('stroke', '#F6530A');
+    ring.setAttribute('stroke-width', '0.8');
+    ring.setAttribute('opacity', '0.35');
+    g.appendChild(ring);
+    const dot = document.createElementNS(NS, 'circle');
+    dot.setAttribute('r', n.size);
+    dot.setAttribute('fill', n.hub ? '#F6530A' : '#fff');
+    dot.setAttribute('opacity', n.hub ? '1' : '0.85');
+    g.appendChild(dot);
+    const label = document.createElementNS(NS, 'text');
+    label.textContent = n.label;
+    label.setAttribute('x', n.size + 12);
+    label.setAttribute('y', 4);
+    label.setAttribute('fill', n.hub ? '#F6530A' : 'rgba(255,255,255,0.85)');
+    label.setAttribute('font-family', 'Fira Sans, sans-serif');
+    label.setAttribute('font-size', n.hub ? '12' : '10.5');
+    label.setAttribute('font-weight', n.hub ? '600' : '500');
+    label.setAttribute('letter-spacing', '0.04em');
+    g.appendChild(label);
+    gNodes.appendChild(g);
+    nodeMap[n.id] = { el: g, label, dot, ring, halo, def: n, x: 0, y: 0 };
+  });
+
+  function applyLayout(name) {
+    const layout = LAYOUTS[name];
+    Object.entries(layout).forEach(([id, [x,y]]) => {
+      const n = nodeMap[id];
+      n.x = x; n.y = y;
+      n.el.setAttribute('transform', `translate(${x} ${y})`);
+    });
+    gEdges.querySelectorAll('line').forEach(line => {
+      const a = nodeMap[line.dataset.from];
+      const b = nodeMap[line.dataset.to];
+      if (!a || !b) return;
+      line.setAttribute('x1', a.x);
+      line.setAttribute('y1', a.y);
+      line.setAttribute('x2', b.x);
+      line.setAttribute('y2', b.y);
+    });
+  }
+
+  function applyMode(mode) {
+    Object.values(nodeMap).forEach(n => {
+      const focused = (mode === 'all') || (n.def.cluster === mode);
+      n.el.style.opacity = focused ? 1 : 0.22;
+      n.dot.setAttribute('fill', focused ? (n.def.hub ? '#F6530A' : '#fff') : '#888');
+      n.ring.setAttribute('opacity', focused ? 0.4 : 0.1);
+      n.label.setAttribute('opacity', focused ? 1 : 0.45);
+    });
+    gEdges.querySelectorAll('line').forEach(line => {
+      const a = nodeMap[line.dataset.from], b = nodeMap[line.dataset.to];
+      const onCluster = mode === 'all' || (a.def.cluster === mode || b.def.cluster === mode);
+      line.setAttribute('stroke-opacity', onCluster ? 0.3 : 0.06);
+      line.setAttribute('stroke', onCluster ? '#F6530A' : '#fff');
+    });
+  }
+
+  function setupPulse() {
+    const pulse = document.createElementNS(NS, 'circle');
+    pulse.setAttribute('r', 3);
+    pulse.setAttribute('fill', '#F6530A');
+    pulse.setAttribute('opacity', '0.95');
+    pulse.setAttribute('filter', 'url(#softGlow)');
+    svg.appendChild(pulse);
+    const path = ['c1','c4','d2','d5','s3','s4','s3','d2','d4','c4','c2','d1','s4'];
+    let i = 0;
+    function travel() {
+      const a = nodeMap[path[i]];
+      const b = nodeMap[path[(i+1) % path.length]];
+      if (!a || !b) { i = 0; setTimeout(travel, 100); return; }
+      const dur = 1200;
+      const start = performance.now();
+      function frame(t) {
+        const p = Math.min(1, (t - start) / dur);
+        const eased = p < 0.5 ? 2*p*p : 1 - Math.pow(-2*p+2,2)/2;
+        const x = a.x + (b.x - a.x) * eased;
+        const y = a.y + (b.y - a.y) * eased;
+        pulse.setAttribute('cx', x);
+        pulse.setAttribute('cy', y);
+        if (p < 1) requestAnimationFrame(frame);
+        else { i = (i + 1) % path.length; setTimeout(travel, 80); }
+      }
+      requestAnimationFrame(frame);
+    }
+    travel();
+  }
+
+  applyLayout('all');
+  applyMode('all');
+  setupPulse();
+
+  document.querySelectorAll('#iaControls button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#iaControls button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const mode = btn.dataset.mode;
+      applyLayout(mode);
+      applyMode(mode);
+    });
+  });
+
+  const ioStage = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      let modeIdx = 0;
+      const modes = ['all','conseil','delivery','shortcuts','all'];
+      const cycle = () => {
+        if (modeIdx >= modes.length) return;
+        const btn = document.querySelector(`#iaControls button[data-mode="${modes[modeIdx]}"]`);
+        if (btn) btn.click();
+        modeIdx++;
+        if (modeIdx < modes.length) setTimeout(cycle, 2600);
+      };
+      setTimeout(cycle, 1200);
+      ioStage.unobserve(e.target);
+    });
+  }, { threshold: 0.4 });
+  ioStage.observe(document.getElementById('iaNet'));
 })();
 </script>
 </body>
