@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Contact &amp; implantations — Infinitif</title>
+<meta name="description" content="Contactez Infinitif. Prospect ou candidat, deux parcours dédiés. Implantations actives à Paris, Bordeaux et Toulouse." />
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
+<link rel="stylesheet" href="../assets/colors_and_type.css" />
+<link rel="stylesheet" href="/v3/v3.css" />
+</head>
+<body>
+
+<a href="#main" class="v3-skip">Aller au contenu</a>
+
+<!-- Baseline band -->
+<div class="v3-baseline-band">
+  <p><span class="accent">Infinitif</span> — Le conseil qui conjugue vos transformations</p>
+</div>
+
+<header class="v3-nav">
+  <div class="v3-nav-inner">
+    <a href="/v3" class="logo" aria-label="Infinitif accueil V3">
+      <img src="../assets/logo-infinitif-black.svg" alt="Infinitif" />
+      <span class="v3-tag">V3</span>
+    </a>
+    <nav class="v3-nav-links" aria-label="Navigation principale">
+      <a href="/v3">Accueil</a>
+      <a href="/v3/a-propos">À propos</a>
+      <a href="/v3/approche-expertises">Approche &amp; expertises</a>
+      <a href="/v3/equipe-engagements">Équipe &amp; engagements</a>
+      <a href="/v3/contact" class="active">Contact</a>
+    </nav>
+    <a href="/v3/contact" class="v3-nav-cta">Parlons-en</a>
+    <button class="v3-burger" id="v3Burger" aria-label="Ouvrir le menu" aria-expanded="false"><span></span></button>
+  </div>
+</header>
+<nav class="v3-mobile" id="v3Mobile" aria-hidden="true">
+  <a href="/v3">Accueil</a>
+  <a href="/v3/a-propos">À propos</a>
+  <a href="/v3/approche-expertises">Approche &amp; expertises</a>
+  <a href="/v3/equipe-engagements">Équipe &amp; engagements</a>
+  <a href="/v3/contact">Contact</a>
+  <a href="/v3/contact" class="v3-mobile-cta">Parlons-en</a>
+</nav>
+
+<main id="main">
+
+  <section class="v3-page-hero">
+    <div class="shell">
+      <div class="v3-eyebrow">Contact</div>
+      <h1 class="v3-title">
+        Parlons de votre <span class="accent">transformation</span>.
+      </h1>
+      <p class="v3-lede">
+        Vous portez un projet de transformation, une réflexion stratégique, un enjeu d'organisation,
+        de changement ou d'appropriation ? Ou vous souhaitez nous rejoindre ?
+        Deux parcours dédiés, une même exigence de réactivité.
+      </p>
+    </div>
+  </section>
+
+  <!-- Contact avec tabs prospect/candidat -->
+  <section class="v3-section">
+    <div class="shell">
+      <div class="v3-section-head">
+        <div class="v3-section-index">A · Contact</div>
+        <div>
+          <h2 class="v3-section-title">
+            En deux phrases, <span class="accent">on revient vite</span>.
+          </h2>
+          <p class="v3-section-lede">
+            Pas de formulaire interminable, pas de « nous reviendrons vers vous prochainement ».
+            Un échange humain, rapide, utile.
+          </p>
+        </div>
+      </div>
+
+      <!-- Tabs prospect / candidat -->
+      <div class="v3-contact-tabs" id="contactTabs">
+        <button class="v3-contact-tab active" data-tab="prospect">Vous êtes prospect</button>
+        <button class="v3-contact-tab" data-tab="candidat" id="tabCandidat">Vous êtes candidat</button>
+      </div>
+
+      <!-- Panel Prospect -->
+      <div class="v3-contact-panel active" id="panelProspect">
+        <div class="v3-contact-grid">
+          <form class="v3-form" method="post" action="mailto:contact@infinitif.com" enctype="text/plain">
+            <label>
+              Votre nom
+              <input type="text" name="nom" required autocomplete="name" />
+            </label>
+            <label>
+              Votre organisation
+              <input type="text" name="organisation" autocomplete="organization" />
+            </label>
+            <label>
+              Email professionnel
+              <input type="email" name="email" required autocomplete="email" />
+            </label>
+            <label>
+              Votre sujet en deux phrases
+              <textarea name="message" required placeholder="Décrivez en quelques mots le contexte et l'enjeu — on revient avec un point de vue."></textarea>
+            </label>
+            <button type="submit">Envoyer</button>
+          </form>
+
+          <aside class="v3-contact-side">
+            <h4>Joignez-nous directement</h4>
+            <div>
+              <a href="mailto:contact@infinitif.com">contact@infinitif.com</a><br>
+              <a href="https://www.linkedin.com/company/infinitif/" target="_blank" rel="noopener">LinkedIn — linkedin.com/company/infinitif</a>
+            </div>
+
+            <h4 style="margin-top:32px;">Délai de réponse</h4>
+            <p style="font-size:14px;line-height:1.6;color:var(--fg-2);margin:0;">
+              On revient sous 48&nbsp;heures ouvrées avec un point de vue sur votre sujet —
+              et, si ça vaut le coup, une proposition concrète.
+            </p>
+          </aside>
+        </div>
+      </div>
+
+      <!-- Panel Candidat -->
+      <div class="v3-contact-panel" id="panelCandidat">
+        <div class="v3-contact-grid">
+          <form class="v3-form" method="post" action="mailto:recrutement@infinitif.com" enctype="text/plain">
+            <label>
+              Votre nom
+              <input type="text" name="nom" required autocomplete="name" />
+            </label>
+            <label>
+              Votre email
+              <input type="email" name="email" required autocomplete="email" />
+            </label>
+            <label>
+              Votre profil
+              <select name="profil">
+                <option value="">— Sélectionner —</option>
+                <option value="consultant-junior">Consultant junior (2-5 ans)</option>
+                <option value="consultant-confirme">Consultant confirmé (5-10 ans)</option>
+                <option value="consultant-senior">Consultant senior (+10 ans)</option>
+                <option value="manager">Manager</option>
+                <option value="support">Fonction support</option>
+                <option value="stage">Stage / alternance</option>
+              </select>
+            </label>
+            <label>
+              Ce qui vous motive chez Infinitif
+              <textarea name="motivation" required placeholder="En quelques phrases, dites-nous ce qui vous attire dans notre approche et votre parcours."></textarea>
+            </label>
+            <button type="submit">Envoyer ma candidature</button>
+          </form>
+
+          <aside class="v3-contact-side">
+            <h4>Rejoignez-nous</h4>
+            <div>
+              <a href="mailto:recrutement@infinitif.com">recrutement@infinitif.com</a><br>
+              <a href="https://www.linkedin.com/company/infinitif/" target="_blank" rel="noopener">Nos offres sur LinkedIn</a>
+            </div>
+
+            <h4 style="margin-top:32px;">Notre promesse</h4>
+            <p style="font-size:14px;line-height:1.6;color:var(--fg-2);margin:0;">
+              Une réponse personnalisée à chaque candidature. Pas de mail automatique —
+              un échange avec un associé pour comprendre votre parcours et vos envies.
+            </p>
+
+            <h4 style="margin-top:32px;">Ce qu'on cherche</h4>
+            <p style="font-size:14px;line-height:1.6;color:var(--fg-2);margin:0;">
+              Des profils hybrides (+5 ans), qui écoutent avant de proposer.
+              Diversité des parcours, sens du réel, envie de construire.
+              35&nbsp;heures de formation par an pour chaque consultant.
+            </p>
+          </aside>
+        </div>
+
+        <p style="margin-top:32px;font-size:14px;color:var(--fg-3);font-family:var(--font-accent);letter-spacing:var(--ls-wide);">
+          Section offres d'emploi détaillées à venir
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Implantations -->
+  <section class="v3-section alt">
+    <div class="shell">
+      <div class="v3-section-head">
+        <div class="v3-section-index">B · Implantations</div>
+        <div>
+          <h2 class="v3-section-title">
+            Présents sur trois territoires, <span class="accent">proches de vous</span>.
+          </h2>
+          <p class="v3-section-lede">
+            Chez Infinitif, nous croyons que la proximité est essentielle pour accompagner
+            efficacement la transformation. Nos trois implantations — Paris, Bordeaux et
+            Toulouse — incarnent notre volonté d'être au plus près de nos clients, de leurs équipes
+            et de leurs réalités locales.
+          </p>
+        </div>
+      </div>
+
+      <div class="v3-offices">
+        <div class="v3-office">
+          <span class="country">France · Île-de-France</span>
+          <div class="city">Paris</div>
+          <div class="addr">8, rue de la Cerisaie<br>75004 Paris</div>
+          <div class="since">Siège social · Fondé en 2024</div>
+        </div>
+        <div class="v3-office">
+          <span class="country">France · Nouvelle-Aquitaine</span>
+          <div class="city">Bordeaux</div>
+          <div class="addr">9, Place Jean Jaurès<br>33000 Bordeaux</div>
+          <div class="since">Implantation active</div>
+        </div>
+        <div class="v3-office">
+          <span class="country">France · Occitanie</span>
+          <div class="city">Toulouse</div>
+          <div class="addr">16, Place Saint Georges<br>31000 Toulouse</div>
+          <div class="since">Implantation active</div>
+        </div>
+      </div>
+
+      <div class="v3-prose" style="margin-top:48px;">
+        <p>
+          En combinant <strong>présence terrain, collaboration hybride et interventions à distance</strong>,
+          nous restons connectés, réactifs et disponibles, tout en adaptant nos accompagnements aux
+          besoins spécifiques de chaque organisation.
+        </p>
+        <p>
+          Être proches, tout en restant agiles : c'est notre engagement pour un accompagnement au plus juste.
+        </p>
+      </div>
+
+      <p style="margin-top:32px;font-size:14px;color:var(--fg-3);font-family:var(--font-accent);letter-spacing:var(--ls-wide);">
+        Photos de nos implantations à venir
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="v3-foot">
+  <div class="v3-foot-grid">
+    <div class="brand">
+      <img src="../assets/logo-infinitif-white.svg" alt="Infinitif" />
+      <p>Le conseil qui conjugue vos transformations. Implantations actives à Paris, Bordeaux et Toulouse.</p>
+    </div>
+    <div>
+      <h5>Le cabinet</h5>
+      <ul>
+        <li><a href="/v3/a-propos">À propos</a></li>
+        <li><a href="/v3/approche-expertises">Approche &amp; expertises</a></li>
+        <li><a href="/v3/equipe-engagements">Équipe &amp; engagements</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Prospect</h5>
+      <ul>
+        <li><a href="/v3/contact">Nous contacter</a></li>
+        <li><a href="mailto:contact@infinitif.com">contact@infinitif.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Candidat</h5>
+      <ul>
+        <li><a href="/v3/contact#candidat">Nous rejoindre</a></li>
+        <li><a href="mailto:recrutement@infinitif.com">recrutement@infinitif.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Légal</h5>
+      <ul>
+        <li><a href="/mentions-legales">Mentions légales</a></li>
+        <li><a href="/confidentialite">RGPD</a></li>
+        <li><a href="/cookies">Cookies</a></li>
+        <li><a href="https://www.linkedin.com/company/infinitif/" target="_blank" rel="noopener">LinkedIn</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="v3-foot-base">
+    <span>© 2026 Infinitif — Le conseil qui conjugue vos transformations.</span>
+    <span><a href="/v2">Version V2</a> · <a href="/">Version V1</a></span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const burger = document.getElementById('v3Burger');
+  const mobile = document.getElementById('v3Mobile');
+  if (!burger) return;
+  burger.addEventListener('click', () => {
+    const open = document.body.classList.toggle('v3-nav-open');
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    mobile.setAttribute('aria-hidden', open ? 'false' : 'true');
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.body.classList.contains('v3-nav-open')) {
+      document.body.classList.remove('v3-nav-open');
+      burger.setAttribute('aria-expanded', 'false');
+      mobile.setAttribute('aria-hidden', 'true');
+    }
+  });
+
+  // Contact tabs
+  const tabs = document.querySelectorAll('.v3-contact-tab');
+  const panels = document.querySelectorAll('.v3-contact-panel');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      const target = tab.dataset.tab;
+      document.getElementById('panel' + target.charAt(0).toUpperCase() + target.slice(1)).classList.add('active');
+    });
+  });
+
+  // Deep link to candidat tab
+  if (window.location.hash === '#candidat') {
+    const candidatTab = document.getElementById('tabCandidat');
+    if (candidatTab) candidatTab.click();
+  }
+})();
+</script>
+</body>
+</html>
